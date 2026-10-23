@@ -1,0 +1,10 @@
+same-product groups with >=2 samples: 5736; pairs per class: 6000
+
+k=14 shared analytes  cosine (relative composition): 0.896  |  1 - Jensen-Shannon distance (relative): 0.909  |  cosine (absolute % w/w): 0.896  |  -Euclidean (log10 absolute): 0.897  |  Spearman rank correlation: 0.883
+k=10 shared analytes  cosine (relative composition): 0.887  |  1 - Jensen-Shannon distance (relative): 0.898  |  cosine (absolute % w/w): 0.885  |  -Euclidean (log10 absolute): 0.885  |  Spearman rank correlation: 0.864
+k= 8 shared analytes  cosine (relative composition): 0.874  |  1 - Jensen-Shannon distance (relative): 0.892  |  cosine (absolute % w/w): 0.877  |  -Euclidean (log10 absolute): 0.880  |  Spearman rank correlation: 0.841
+k= 6 shared analytes  cosine (relative composition): 0.859  |  1 - Jensen-Shannon distance (relative): 0.879  |  cosine (absolute % w/w): 0.855  |  -Euclidean (log10 absolute): 0.873  |  Spearman rank correlation: 0.785
+k= 5 shared analytes  cosine (relative composition): 0.846  |  1 - Jensen-Shannon distance (relative): 0.868  |  cosine (absolute % w/w): 0.847  |  -Euclidean (log10 absolute): 0.867  |  Spearman rank correlation: 0.734
+k= 4 shared analytes  cosine (relative composition): 0.827  |  1 - Jensen-Shannon distance (relative): 0.848  |  cosine (absolute % w/w): 0.821  |  -Euclidean (log10 absolute): 0.860  |  Spearman rank correlation: 0.639
+k= 3 shared analytes  cosine (relative composition): 0.794  |  1 - Jensen-Shannon distance (relative): 0.820  |  cosine (absolute % w/w): 0.797  |  -Euclidean (log10 absolute): 0.847  |  Spearman rank correlation: 0.473
+k= 2 shared analytes  cosine (relative composition): 0.724  |  1 - Jensen-Shannon distance (relative): 0.741  |  cosine (absolute % w/w): 0.719  |  -Euclidean (log10 absolute): 0.822  |  Spearman rank correlation: 0.234

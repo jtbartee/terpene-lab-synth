@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 5320128,
+        "MolecularFormula": "C15H26O",
+        "MolecularWeight": "222.37",
+        "SMILES": "CC(=CCC/C(=C\\CCC(C)(C=C)O)/C)C",
+        "ConnectivitySMILES": "CC(=CCCC(=CCCC(C)(C=C)O)C)C",
+        "InChI": "InChI=1S/C15H26O/c1-6-15(5,16)12-8-11-14(4)10-7-9-13(2)3/h6,9,11,16H,1,7-8,10,12H2,2-5H3/b14-11-",
+        "InChIKey": "FQTLCLSUCSAZDY-KAMYIIQDSA-N",
+        "IUPACName": "(6Z)-3,7,11-trimethyldodeca-1,6,10-trien-3-ol",
+        "XLogP": 4.6,
+        "ExactMass": "222.198365449",
+        "TPSA": 20.2,
+        "HeavyAtomCount": 16,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 1,
+        "DefinedBondStereoCount": 1,
+        "Title": "1,6,10-Dodecatrien-3-ol, 3,7,11-trimethyl-, [S-(Z)]-"
+      }
+    ]
+  }
+}

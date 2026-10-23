@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 637566,
+        "MolecularFormula": "C10H18O",
+        "MolecularWeight": "154.25",
+        "SMILES": "CC(=CCC/C(=C/CO)/C)C",
+        "ConnectivitySMILES": "CC(=CCCC(=CCO)C)C",
+        "InChI": "InChI=1S/C10H18O/c1-9(2)5-4-6-10(3)7-8-11/h5,7,11H,4,6,8H2,1-3H3/b10-7+",
+        "InChIKey": "GLZPCOQZEFWAFX-JXMROGBWSA-N",
+        "IUPACName": "(2E)-3,7-dimethylocta-2,6-dien-1-ol",
+        "XLogP": 2.9,
+        "ExactMass": "154.135765193",
+        "TPSA": 20.2,
+        "HeavyAtomCount": 11,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 1,
+        "Title": "Geraniol"
+      }
+    ]
+  }
+}

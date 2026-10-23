@@ -1,0 +1,126 @@
+{
+  "$comment": "Hand-curated list of analytes (what a lab reports) and the PubChem compounds behind them. CIDs were resolved by name through PUG REST on 2026-10-23 and then checked by InChIKey stereo layer. Run `npm run data:pubchem` to refresh the generated record.",
+  "verified": "2026-10-23",
+  "analytes": [
+    {
+      "id": "myrcene", "label": "β-Myrcene", "short": "MYR", "referenceCid": 31253, "memberCids": [],
+      "family": "monoterpene", "subclass": "acyclic monoterpene hydrocarbon",
+      "stereoNote": "Achiral; no stereoisomers to distinguish.",
+      "labAliases": ["myrcene", "b_myrcene", "beta-myrcene"]
+    },
+    {
+      "id": "limonene", "label": "Limonene", "short": "LIM", "referenceCid": 22311, "memberCids": [440917, 439250],
+      "family": "monoterpene", "subclass": "monocyclic monoterpene hydrocarbon",
+      "stereoNote": "Chiral. Routine cannabis testing on achiral GC columns reports total limonene without resolving (R)-(+) and (S)-(−) enantiomers. Biosynthesis work characterised a cannabis (−)-limonene synthase (Günnewich et al. 2007; Booth et al. 2017), while some aroma literature refers to D-(+)-limonene (Oswald et al. 2023). The enantiomeric composition of a given sample is therefore unknown.",
+      "labAliases": ["limonene", "d-limonene"]
+    },
+    {
+      "id": "caryophyllene", "label": "β-Caryophyllene", "short": "CAR", "referenceCid": 5281515, "memberCids": [],
+      "family": "sesquiterpene", "subclass": "bicyclic sesquiterpene hydrocarbon",
+      "stereoNote": "PubChem CID 5281515 is (−)-trans-caryophyllene, the naturally predominant form. Labs report 'caryophyllene' or 'β-caryophyllene'; caryophyllene oxide is a separate oxidation product and is not included here.",
+      "labAliases": ["caryophyllene", "b_caryophyllene", "beta-caryophyllene"]
+    },
+    {
+      "id": "a_pinene", "label": "α-Pinene", "short": "αPN", "referenceCid": 6654, "memberCids": [82227, 440968],
+      "family": "monoterpene", "subclass": "bicyclic monoterpene hydrocarbon",
+      "stereoNote": "Chiral. Labs report total α-pinene. A cannabis (+)-α-pinene synthase has been characterised (Günnewich et al. 2007; Booth et al. 2017), but sample enantiomer ratios are not reported.",
+      "labAliases": ["a_pinene", "alpha-pinene"]
+    },
+    {
+      "id": "b_pinene", "label": "β-Pinene", "short": "βPN", "referenceCid": 14896, "memberCids": [],
+      "family": "monoterpene", "subclass": "bicyclic monoterpene hydrocarbon",
+      "stereoNote": "Chiral; labs report total β-pinene with stereochemistry unresolved.",
+      "labAliases": ["b_pinene", "beta-pinene"]
+    },
+    {
+      "id": "linalool", "label": "Linalool", "short": "LIN", "referenceCid": 6549, "memberCids": [443158, 67179],
+      "family": "monoterpenoid", "subclass": "acyclic monoterpene alcohol",
+      "stereoNote": "Chiral. (R)-(−)-linalool (licareol) and (S)-(+)-linalool (coriandrol) are distinct compounds; routine testing reports their total.",
+      "labAliases": ["linalool", "linalool_lin"]
+    },
+    {
+      "id": "humulene", "label": "α-Humulene", "short": "HUM", "referenceCid": 5281520, "memberCids": [],
+      "family": "sesquiterpene", "subclass": "monocyclic sesquiterpene hydrocarbon",
+      "stereoNote": "Achiral ring with defined (E) double-bond geometry; formerly called α-caryophyllene, a ring-opened isomer of β-caryophyllene.",
+      "labAliases": ["humulene", "humulene_hum", "alpha-humulene"]
+    },
+    {
+      "id": "terpinolene", "label": "Terpinolene", "short": "TPO", "referenceCid": 11463, "memberCids": [],
+      "family": "monoterpene", "subclass": "monocyclic monoterpene hydrocarbon",
+      "stereoNote": "Achiral.",
+      "labAliases": ["terpinolene"]
+    },
+    {
+      "id": "ocimene", "label": "Ocimene (isomer total)", "short": "OCI", "referenceCid": 18756, "memberCids": [5281553, 5320250],
+      "family": "monoterpene", "subclass": "acyclic monoterpene hydrocarbon",
+      "stereoNote": "Labs report one or more geometric isomers — (E)-β-ocimene, (Z)-β-ocimene and sometimes α-ocimene — that are separate compounds. The Smith et al. dataset sums all reported ocimene isomers into one total; this analyte is that total, not a single compound.",
+      "labAliases": ["ocimene", "tot_ocimene", "b_ocimene", "cis_ocimene", "trans_ocimene"]
+    },
+    {
+      "id": "nerolidol", "label": "Nerolidol (isomer total)", "short": "NER", "referenceCid": 8888, "memberCids": [5284507, 5320128],
+      "family": "sesquiterpenoid", "subclass": "acyclic sesquiterpene alcohol",
+      "stereoNote": "(E)-(trans) and (Z)-(cis)-nerolidol are distinct geometric isomers, each also chiral at C3. Smith et al. sum cis, trans and unspecified nerolidol into one total; the CT registry reports cis and trans separately.",
+      "labAliases": ["nerolidol", "tot_nerolidol_ct", "cis_nerolidol", "trans_nerolidol"]
+    },
+    {
+      "id": "bisabolol", "label": "α-Bisabolol", "short": "BIS", "referenceCid": 10586, "memberCids": [442343],
+      "family": "sesquiterpenoid", "subclass": "monocyclic sesquiterpene alcohol",
+      "stereoNote": "Has two stereocentres. (−)-α-Bisabolol (levomenol, CID 442343) is the well-known natural form, but cannabis lab reports do not specify the stereoisomer, so the stereo-unspecified record is the reference.",
+      "labAliases": ["bisabolol", "a_bisabolol", "alpha-bisabolol"]
+    },
+    {
+      "id": "camphene", "label": "Camphene", "short": "CMP", "referenceCid": 6616, "memberCids": [],
+      "family": "monoterpene", "subclass": "bicyclic monoterpene hydrocarbon",
+      "stereoNote": "Chiral; labs report the total.",
+      "labAliases": ["camphene"]
+    },
+    {
+      "id": "borneol", "label": "Borneol", "short": "BOR", "referenceCid": 64685, "memberCids": [6552009, 1201518],
+      "family": "monoterpenoid", "subclass": "bicyclic monoterpene alcohol",
+      "stereoNote": "PubChem CID 64685 leaves the stereocentres undefined. Borneol (endo) and isoborneol (exo, CID 6321405) are diastereomers; the CT registry reports them as separate analytes and only 'borneol' is mapped here.",
+      "labAliases": ["borneol"]
+    },
+    {
+      "id": "fenchol", "label": "Fenchol", "short": "FEN", "referenceCid": 15406, "memberCids": [],
+      "family": "monoterpenoid", "subclass": "bicyclic monoterpene alcohol",
+      "stereoNote": "Also called fenchyl alcohol. CID 15406 leaves stereocentres undefined; labs do not specify the isomer. Not to be confused with fenchone, a ketone reported separately.",
+      "labAliases": ["fenchol", "fenchyl_alcohol"]
+    },
+    {
+      "id": "geraniol", "label": "Geraniol", "short": "GER", "referenceCid": 637566, "memberCids": [],
+      "family": "monoterpenoid", "subclass": "acyclic monoterpene alcohol",
+      "stereoNote": "The (E) isomer; its (Z) isomer nerol is a separate compound reported separately.",
+      "labAliases": ["geraniol"]
+    },
+    {
+      "id": "valencene", "label": "Valencene", "short": "VAL", "referenceCid": 9855795, "memberCids": [],
+      "family": "sesquiterpene", "subclass": "bicyclic sesquiterpene hydrocarbon",
+      "stereoNote": "CID 9855795 is (+)-valencene with defined stereocentres.",
+      "labAliases": ["valencene"]
+    },
+    {
+      "id": "g_terpinene", "label": "γ-Terpinene", "short": "γTP", "referenceCid": 7461, "memberCids": [],
+      "family": "monoterpene", "subclass": "monocyclic monoterpene hydrocarbon",
+      "stereoNote": "Achiral. A positional isomer of α-terpinene and terpinolene.",
+      "labAliases": ["g_terpinene", "gamma-terpinene"]
+    },
+    {
+      "id": "a_terpinene", "label": "α-Terpinene", "short": "αTP", "referenceCid": 7462, "memberCids": [],
+      "family": "monoterpene", "subclass": "monocyclic monoterpene hydrocarbon",
+      "stereoNote": "Achiral.",
+      "labAliases": ["a_terpinene", "alpha-terpinene"]
+    }
+  ],
+  "contextCompounds": [
+    {
+      "id": "prenylthiol", "label": "3-Methyl-2-butene-1-thiol", "cid": 146586,
+      "family": "volatile sulfur compound",
+      "note": "Not a terpene. Identified by Oswald et al. (2021) as the primary odorant behind the characteristic 'skunk-like' aroma of cannabis, present at trace levels that routine terpene panels do not measure."
+    },
+    {
+      "id": "skatole", "label": "Skatole (3-methylindole)", "cid": 6736,
+      "family": "indole",
+      "note": "Not a terpene. Oswald et al. (2023) identified skatole as the key source of the 'chemical' aroma in some cultivars and argued that the importance of terpenes to cannabis aroma has been overemphasised."
+    }
+  ]
+}

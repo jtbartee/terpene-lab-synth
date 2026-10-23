@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 31253,
+        "MolecularFormula": "C10H16",
+        "MolecularWeight": "136.23",
+        "SMILES": "CC(=CCCC(=C)C=C)C",
+        "ConnectivitySMILES": "CC(=CCCC(=C)C=C)C",
+        "InChI": "InChI=1S/C10H16/c1-5-10(4)8-6-7-9(2)3/h5,7H,1,4,6,8H2,2-3H3",
+        "InChIKey": "UAHWPYUMFXYFJY-UHFFFAOYSA-N",
+        "IUPACName": "7-methyl-3-methylideneocta-1,6-diene",
+        "XLogP": 4.3,
+        "ExactMass": "136.125200510",
+        "TPSA": 0,
+        "HeavyAtomCount": 10,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 0,
+        "Title": "Myrcene"
+      }
+    ]
+  }
+}

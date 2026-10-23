@@ -1,0 +1,44 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 6654,
+    "RecordTitle": "(+-)-alpha-Pinene",
+    "Section": [
+      {
+        "TOCHeading": "Food Additives and Ingredients",
+        "Description": "This section provides information on chemicals found in food (e.g., food additives, flavoring and coloring agents).",
+        "Section": [
+          {
+            "TOCHeading": "FEMA Flavor Profile",
+            "Description": "The Flavor Profile describes the general type of flavor that this chemical contributes.  This profile is from the Flavor Ingredient Library of the Flavor and Extract Manufacturers Association (FEMA).",
+            "URL": "https://www.femaflavor.org/flavor-library",
+            "Information": [
+              {
+                "ReferenceNumber": 38,
+                "Name": "FEMA Flavor Profile",
+                "Value": {
+                  "StringWithMarkup": [
+                    {
+                      "String": "Cedarwood, Pine, Sharp"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 38,
+        "SourceName": "Flavor and Extract Manufacturers Association (FEMA)",
+        "SourceID": "2902",
+        "Name": "ALPHA-PINENE",
+        "Description": "FEMA, The Flavor and Extract Manufacturers Association of the United States, is comprised of flavor manufacturers, flavor users, flavor ingredient suppliers, and others with an interest in the U.S. flavor industry. Read more: https://www.femaflavor.org/",
+        "URL": "https://www.femaflavor.org/flavor-library/alpha-pinene",
+        "ANID": 6879496
+      }
+    ]
+  }
+}

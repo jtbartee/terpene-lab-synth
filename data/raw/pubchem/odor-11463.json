@@ -1,0 +1,87 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 11463,
+    "RecordTitle": "Terpinolene",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 37,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 523"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 523",
+                        "Matched": {
+                          "PCLID": 900026590,
+                          "Citation": "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 523"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "SWEET, PINE ODOR"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 37,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Furia, T.E. (ed.). CRC Handbook of Food Additives. 2nd ed. Volume 2. Boca Raton, Florida: CRC Press, Inc., 1980., p. 302"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Furia, T.E. (ed.). CRC Handbook of Food Additives. 2nd ed. Volume 2. Boca Raton, Florida: CRC Press, Inc., 1980., p. 302",
+                        "Matched": {
+                          "PCLID": 900090601,
+                          "Citation": "Furia, T.E. (ed.). CRC Handbook of Food Additives. 2nd ed. Volume 2. Boca Raton, Florida: CRC Press, Inc., 1980., p. 302"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "PINE-LIKE AROMA"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 37,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "5702",
+        "Name": "TERPINOLENE",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/5702",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 3736
+      }
+    ]
+  }
+}

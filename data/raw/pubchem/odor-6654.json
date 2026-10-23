@@ -1,0 +1,87 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 6654,
+    "RecordTitle": "(+-)-alpha-Pinene",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 43,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 486"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 486",
+                        "Matched": {
+                          "PCLID": 900035526,
+                          "Citation": "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 486"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "CHARACTERISTIC ODOR OF PINE"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 43,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Lewis, R.J. Sax's Dangerous Properties of Industrial  Materials. 10th ed. Volumes 1-3 New York, NY: John Wiley &  Sons Inc., 1999., p. 2970"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Lewis, R.J. Sax's Dangerous Properties of Industrial  Materials. 10th ed. Volumes 1-3 New York, NY: John Wiley &  Sons Inc., 1999., p. 2970",
+                        "Matched": {
+                          "PCLID": 900118364,
+                          "Citation": "Lewis, R.J. Sax's Dangerous Properties of Industrial  Materials. 10th ed. Volumes 1-3 New York, NY: John Wiley &  Sons Inc., 1999., p. 2970"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Odor of turpentine"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 43,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "720",
+        "Name": "ALPHA-PINENE",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/720",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 649
+      }
+    ]
+  }
+}

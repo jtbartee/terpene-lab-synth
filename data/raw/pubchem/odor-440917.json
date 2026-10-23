@@ -1,0 +1,64 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 440917,
+    "RecordTitle": "(+)-Limonene",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 40,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. V4: 2741"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. V4: 2741",
+                        "Matched": {
+                          "PCLID": 900051296,
+                          "Citation": "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. V4: 2741"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Citrus odor"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 40,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "4186",
+        "Name": "(D)-LIMONENE",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/4186",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 2912
+      }
+    ]
+  }
+}

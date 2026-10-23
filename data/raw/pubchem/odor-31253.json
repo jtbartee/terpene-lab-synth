@@ -1,0 +1,87 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 31253,
+    "RecordTitle": "Myrcene",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 38,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Lewis, R.J. Sr.; Hawley's Condensed Chemical Dictionary 15th  Edition. John Wiley & Sons, Inc. New York, NY 2007., p. 868"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Lewis, R.J. Sr.; Hawley's Condensed Chemical Dictionary 15th  Edition. John Wiley & Sons, Inc. New York, NY 2007., p. 868",
+                        "Matched": {
+                          "PCLID": 900072421,
+                          "Citation": "Lewis, R.J. Sr.; Hawley's Condensed Chemical Dictionary 15th  Edition. John Wiley & Sons, Inc. New York, NY 2007., p. 868"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Pleasant"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 38,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Ashford, R.D. Ashford's Dictionary of Industrial Chemicals. London, England: Wavelength Publications Ltd., 1994., p. 612"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Ashford, R.D. Ashford's Dictionary of Industrial Chemicals. London, England: Wavelength Publications Ltd., 1994., p. 612",
+                        "Matched": {
+                          "PCLID": 900105223,
+                          "Citation": "Ashford, R.D. Ashford's Dictionary of Industrial Chemicals. London, England: Wavelength Publications Ltd., 1994., p. 612"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Terpene odor"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 38,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "1258",
+        "Name": "MYRCENE",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/1258",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 1152
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 442343,
+        "MolecularFormula": "C15H26O",
+        "MolecularWeight": "222.37",
+        "SMILES": "CC1=CC[C@H](CC1)[C@](C)(CCC=C(C)C)O",
+        "ConnectivitySMILES": "CC1=CCC(CC1)C(C)(CCC=C(C)C)O",
+        "InChI": "InChI=1S/C15H26O/c1-12(2)6-5-11-15(4,16)14-9-7-13(3)8-10-14/h6-7,14,16H,5,8-11H2,1-4H3/t14-,15+/m1/s1",
+        "InChIKey": "RGZSQWQPBWRIAQ-CABCVRRESA-N",
+        "IUPACName": "(2S)-6-methyl-2-[(1S)-4-methylcyclohex-3-en-1-yl]hept-5-en-2-ol",
+        "XLogP": 3.8,
+        "ExactMass": "222.198365449",
+        "TPSA": 20.2,
+        "HeavyAtomCount": 16,
+        "DefinedAtomStereoCount": 2,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 0,
+        "Title": "Levomenol"
+      }
+    ]
+  }
+}

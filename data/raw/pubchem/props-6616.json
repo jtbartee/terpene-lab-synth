@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 6616,
+        "MolecularFormula": "C10H16",
+        "MolecularWeight": "136.23",
+        "SMILES": "CC1(C2CCC(C2)C1=C)C",
+        "ConnectivitySMILES": "CC1(C2CCC(C2)C1=C)C",
+        "InChI": "InChI=1S/C10H16/c1-7-8-4-5-9(6-8)10(7,2)3/h8-9H,1,4-6H2,2-3H3",
+        "InChIKey": "CRPUJAZIXJMDBK-UHFFFAOYSA-N",
+        "IUPACName": "2,2-dimethyl-3-methylidenebicyclo[2.2.1]heptane",
+        "XLogP": 3.3,
+        "ExactMass": "136.125200510",
+        "TPSA": 0,
+        "HeavyAtomCount": 10,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 2,
+        "DefinedBondStereoCount": 0,
+        "Title": "Camphene"
+      }
+    ]
+  }
+}

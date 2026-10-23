@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 6552009,
+        "MolecularFormula": "C10H18O",
+        "MolecularWeight": "154.25",
+        "SMILES": "C[C@@]12CC[C@@H](C1(C)C)C[C@@H]2O",
+        "ConnectivitySMILES": "CC1(C2CCC1(C(C2)O)C)C",
+        "InChI": "InChI=1S/C10H18O/c1-9(2)7-4-5-10(9,3)8(11)6-7/h7-8,11H,4-6H2,1-3H3/t7-,8+,10+/m1/s1",
+        "InChIKey": "DTGKSKDOIYIVQL-WEDXCCLWSA-N",
+        "IUPACName": "(1R,2S,4R)-1,7,7-trimethylbicyclo[2.2.1]heptan-2-ol",
+        "XLogP": 2.7,
+        "ExactMass": "154.135765193",
+        "TPSA": 20.2,
+        "HeavyAtomCount": 11,
+        "DefinedAtomStereoCount": 3,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 0,
+        "Title": "D-Borneol"
+      }
+    ]
+  }
+}

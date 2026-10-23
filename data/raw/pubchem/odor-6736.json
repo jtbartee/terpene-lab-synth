@@ -1,0 +1,87 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 6736,
+    "RecordTitle": "Skatole",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 38,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 518"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 518",
+                        "Matched": {
+                          "PCLID": 900075145,
+                          "Citation": "Fenaroli's Handbook of Flavor Ingredients. Volume 2. Edited, translated, and revised by T.E. Furia and N. Bellanca. 2nd ed. Cleveland: The Chemical Rubber Co., 1975., p. 518"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "CHARACTERISTIC FECAL ODOR AT HIGH LEVELS, BECOMING PLEASANT, SWEET, AND WARM AT VERY LOW LEVELS"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 38,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Budavari, S. (ed.). The Merck Index - An Encyclopedia of Chemicals, Drugs, and Biologicals. Whitehouse Station, NJ: Merck and Co., Inc., 1996., p. 1468"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Budavari, S. (ed.). The Merck Index - An Encyclopedia of Chemicals, Drugs, and Biologicals. Whitehouse Station, NJ: Merck and Co., Inc., 1996., p. 1468",
+                        "Matched": {
+                          "PCLID": 900075401,
+                          "Citation": "Budavari, S. (ed.). The Merck Index - An Encyclopedia of Chemicals, Drugs, and Biologicals. Whitehouse Station, NJ: Merck and Co., Inc., 1996., p. 1468"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Fecal odor"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 38,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "3511",
+        "Name": "3-METHYLINDOLE",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/3511",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 2635
+      }
+    ]
+  }
+}

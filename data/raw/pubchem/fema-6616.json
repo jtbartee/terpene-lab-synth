@@ -1,0 +1,53 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 6616,
+    "RecordTitle": "Camphene",
+    "Section": [
+      {
+        "TOCHeading": "Food Additives and Ingredients",
+        "Description": "This section provides information on chemicals found in food (e.g., food additives, flavoring and coloring agents).",
+        "Section": [
+          {
+            "TOCHeading": "FEMA Flavor Profile",
+            "Description": "The Flavor Profile describes the general type of flavor that this chemical contributes.  This profile is from the Flavor Ingredient Library of the Flavor and Extract Manufacturers Association (FEMA).",
+            "URL": "https://www.femaflavor.org/flavor-library",
+            "Information": [
+              {
+                "ReferenceNumber": 31,
+                "Name": "FEMA Flavor Profile",
+                "Value": {
+                  "StringWithMarkup": [
+                    {
+                      "String": "Camphor, Mothball, Oil, Warm",
+                      "Markup": [
+                        {
+                          "Start": 0,
+                          "Length": 7,
+                          "URL": "https://pubchem.ncbi.nlm.nih.gov/compound/Camphor",
+                          "Type": "PubChem Internal Link",
+                          "Extra": "CID-2537"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 31,
+        "SourceName": "Flavor and Extract Manufacturers Association (FEMA)",
+        "SourceID": "2229",
+        "Name": "CAMPHENE",
+        "Description": "FEMA, The Flavor and Extract Manufacturers Association of the United States, is comprised of flavor manufacturers, flavor users, flavor ingredient suppliers, and others with an interest in the U.S. flavor industry. Read more: https://www.femaflavor.org/",
+        "URL": "https://www.femaflavor.org/flavor-library/camphene",
+        "ANID": 6878829
+      }
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 6616,
+    "RecordTitle": "Camphene",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 34,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Burdock GA, ed; Fenaroli's Handbook of Flavor Ingredients. 6th ed., Boca Raton, FL: CRC Press p. 238 (2010)"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Burdock GA, ed; Fenaroli's Handbook of Flavor Ingredients. 6th ed., Boca Raton, FL: CRC Press p. 238 (2010)",
+                        "Matched": {
+                          "PCLID": 900053791,
+                          "Citation": "Burdock GA, ed; Fenaroli's Handbook of Flavor Ingredients. 6th ed., Boca Raton, FL: CRC Press p. 238 (2010)"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Camphoraceous, cooling, piney wood with trephy nuances...citrus and green minty and green spicy notes"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 34,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Baxter CS et al; Alicyclic Hydrocarbons. Patty's Toxicology. 6th ed. (1999-2015). New York, NY: John Wiley & Sons, Inc. On-line Posting Date: August, 17, 2015"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Baxter CS et al; Alicyclic Hydrocarbons. Patty's Toxicology. 6th ed. (1999-2015). New York, NY: John Wiley & Sons, Inc. On-line Posting Date: August, 17, 2015",
+                        "Matched": {
+                          "PCLID": 900014303,
+                          "Citation": "Baxter CS et al; Alicyclic Hydrocarbons. Patty's Toxicology. 6th ed. (1999-2015). New York, NY: John Wiley & Sons, Inc. On-line Posting Date: August, 17, 2015"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Insipid odor"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 34,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Eggersdorfer M; Terpenes. Ullmann's Encyclopedia of Industrial Chemistry. 7th ed. (1999-2015). New York, NY: John Wiley & Sons. Online Posting Date: June 15, 2000."
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Eggersdorfer M; Terpenes. Ullmann's Encyclopedia of Industrial Chemistry. 7th ed. (1999-2015). New York, NY: John Wiley & Sons. Online Posting Date: June 15, 2000.",
+                        "Matched": {
+                          "PCLID": 900028846,
+                          "Citation": "Eggersdorfer M; Terpenes. Ullmann's Encyclopedia of Industrial Chemistry. 7th ed. (1999-2015). New York, NY: John Wiley & Sons. Online Posting Date: June 15, 2000."
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Camphor-like"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 34,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "900",
+        "Name": "CAMPHENE",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/900",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 815
+      }
+    ]
+  }
+}

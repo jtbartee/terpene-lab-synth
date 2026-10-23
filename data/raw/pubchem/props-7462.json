@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 7462,
+        "MolecularFormula": "C10H16",
+        "MolecularWeight": "136.23",
+        "SMILES": "CC1=CC=C(CC1)C(C)C",
+        "ConnectivitySMILES": "CC1=CC=C(CC1)C(C)C",
+        "InChI": "InChI=1S/C10H16/c1-8(2)10-6-4-9(3)5-7-10/h4,6,8H,5,7H2,1-3H3",
+        "InChIKey": "YHQGMYUVUMAZJR-UHFFFAOYSA-N",
+        "IUPACName": "1-methyl-4-propan-2-ylcyclohexa-1,3-diene",
+        "XLogP": 2.8,
+        "ExactMass": "136.125200510",
+        "TPSA": 0,
+        "HeavyAtomCount": 10,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 0,
+        "Title": "Alpha-Terpinene"
+      }
+    ]
+  }
+}

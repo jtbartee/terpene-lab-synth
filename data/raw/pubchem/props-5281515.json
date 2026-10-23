@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 5281515,
+        "MolecularFormula": "C15H24",
+        "MolecularWeight": "204.35",
+        "SMILES": "C/C/1=C\\CCC(=C)[C@H]2CC([C@@H]2CC1)(C)C",
+        "ConnectivitySMILES": "CC1=CCCC(=C)C2CC(C2CC1)(C)C",
+        "InChI": "InChI=1S/C15H24/c1-11-6-5-7-12(2)13-10-15(3,4)14(13)9-8-11/h6,13-14H,2,5,7-10H2,1,3-4H3/b11-6+/t13-,14-/m1/s1",
+        "InChIKey": "NPNUFJAVOOONJE-GFUGXAQUSA-N",
+        "IUPACName": "(1R,4E,9S)-4,11,11-trimethyl-8-methylidenebicyclo[7.2.0]undec-4-ene",
+        "XLogP": 4.4,
+        "ExactMass": "204.187800766",
+        "TPSA": 0,
+        "HeavyAtomCount": 15,
+        "DefinedAtomStereoCount": 2,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 1,
+        "Title": "(-)-Caryophyllene"
+      }
+    ]
+  }
+}

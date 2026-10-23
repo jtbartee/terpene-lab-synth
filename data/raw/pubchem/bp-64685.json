@@ -1,0 +1,64 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 64685,
+    "RecordTitle": "Borneol",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Boiling Point",
+                "Description": "The temperature at which this compound changes state from liquid to gas at a given atmospheric pressure.",
+                "URL": "https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Organic_Chemistry_Lab_Techniques_(Nichols)/06%3A_Miscellaneous_Techniques/6.02%3A_Boiling_Point",
+                "Information": [
+                  {
+                    "ReferenceNumber": 33,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Larranaga, M.D., Lewis, R.J. Sr., Lewis, R.A.; Hawley's Condensed Chemical Dictionary 16th  Edition. John Wiley & Sons, Inc. Hoboken, NJ 2016., p. 196"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Larranaga, M.D., Lewis, R.J. Sr., Lewis, R.A.; Hawley's Condensed Chemical Dictionary 16th  Edition. John Wiley & Sons, Inc. Hoboken, NJ 2016., p. 196",
+                        "Matched": {
+                          "PCLID": 900068166,
+                          "Citation": "Larranaga, M.D., Lewis, R.J. Sr., Lewis, R.A.; Hawley's Condensed Chemical Dictionary 16th  Edition. John Wiley & Sons, Inc. Hoboken, NJ 2016., p. 196"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "212 °C"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 33,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "946",
+        "Name": "BORNEOL",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/946",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 859
+      }
+    ]
+  }
+}

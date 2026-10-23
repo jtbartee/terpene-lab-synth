@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 14896,
+        "MolecularFormula": "C10H16",
+        "MolecularWeight": "136.23",
+        "SMILES": "CC1(C2CCC(=C)C1C2)C",
+        "ConnectivitySMILES": "CC1(C2CCC(=C)C1C2)C",
+        "InChI": "InChI=1S/C10H16/c1-7-4-5-8-6-9(7)10(8,2)3/h8-9H,1,4-6H2,2-3H3",
+        "InChIKey": "WTARULDDTDQWMU-UHFFFAOYSA-N",
+        "IUPACName": "6,6-dimethyl-2-methylidenebicyclo[3.1.1]heptane",
+        "XLogP": 3.1,
+        "ExactMass": "136.125200510",
+        "TPSA": 0,
+        "HeavyAtomCount": 10,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 2,
+        "DefinedBondStereoCount": 0,
+        "Title": "Beta-Pinene"
+      }
+    ]
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 6549,
+    "RecordTitle": "Linalool",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 39,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. 2742"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. 2742",
+                        "Matched": {
+                          "PCLID": 900066472,
+                          "Citation": "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. 2742"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Odor similar to that of bergamot oil and French lavender"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 39,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Burdock, G.A. (ed.). Fenaroli's Handbook of Flavor     Ingredients. 5th ed.Boca Raton, FL 2005, p. 1028"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Burdock, G.A. (ed.). Fenaroli's Handbook of Flavor     Ingredients. 5th ed.Boca Raton, FL 2005, p. 1028",
+                        "Matched": {
+                          "PCLID": 900076496,
+                          "Citation": "Burdock, G.A. (ed.). Fenaroli's Handbook of Flavor     Ingredients. 5th ed.Boca Raton, FL 2005, p. 1028"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Typical floral odor free from camphoraceous and terpenic notes"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 39,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Furia, T.E. (ed.). CRC Handbook of Food Additives. 2nd ed. Volume 2. Boca Raton, Florida: CRC Press, Inc., 1980., p. 283"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Furia, T.E. (ed.). CRC Handbook of Food Additives. 2nd ed. Volume 2. Boca Raton, Florida: CRC Press, Inc., 1980., p. 283",
+                        "Matched": {
+                          "PCLID": 900016899,
+                          "Citation": "Furia, T.E. (ed.). CRC Handbook of Food Additives. 2nd ed. Volume 2. Boca Raton, Florida: CRC Press, Inc., 1980., p. 283"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Floral, spicy, wood odor"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 39,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Ferreira V, Lopez R, ed; Flavour Science. Proceedings from XIII Weurman Flavour Research Symposium. Waltham, MA: Elsevier Inc., p. 201 (2014)"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Ferreira V, Lopez R, ed; Flavour Science. Proceedings from XIII Weurman Flavour Research Symposium. Waltham, MA: Elsevier Inc., p. 201 (2014)",
+                        "Matched": {
+                          "PCLID": 900076621,
+                          "Citation": "Ferreira V, Lopez R, ed; Flavour Science. Proceedings from XIII Weurman Flavour Research Symposium. Waltham, MA: Elsevier Inc., p. 201 (2014)"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Flowery-fresh odor and reminiscent of Lily of the Valley"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 39,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "645",
+        "Name": "LINALOOL",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/645",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 579
+      }
+    ]
+  }
+}

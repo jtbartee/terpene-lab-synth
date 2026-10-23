@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 6549,
+        "MolecularFormula": "C10H18O",
+        "MolecularWeight": "154.25",
+        "SMILES": "CC(=CCCC(C)(C=C)O)C",
+        "ConnectivitySMILES": "CC(=CCCC(C)(C=C)O)C",
+        "InChI": "InChI=1S/C10H18O/c1-5-10(4,11)8-6-7-9(2)3/h5,7,11H,1,6,8H2,2-4H3",
+        "InChIKey": "CDOSHBSSFJOMGT-UHFFFAOYSA-N",
+        "IUPACName": "3,7-dimethylocta-1,6-dien-3-ol",
+        "XLogP": 2.7,
+        "ExactMass": "154.135765193",
+        "TPSA": 20.2,
+        "HeavyAtomCount": 11,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 1,
+        "DefinedBondStereoCount": 0,
+        "Title": "Linalool"
+      }
+    ]
+  }
+}

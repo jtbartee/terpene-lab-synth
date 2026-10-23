@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 146586,
+        "MolecularFormula": "C5H10S",
+        "MolecularWeight": "102.20",
+        "SMILES": "CC(=CCS)C",
+        "ConnectivitySMILES": "CC(=CCS)C",
+        "InChI": "InChI=1S/C5H10S/c1-5(2)3-4-6/h3,6H,4H2,1-2H3",
+        "InChIKey": "GYDPOKGOQFTYGW-UHFFFAOYSA-N",
+        "IUPACName": "3-methylbut-2-ene-1-thiol",
+        "XLogP": 2,
+        "ExactMass": "102.05032149",
+        "TPSA": 1,
+        "HeavyAtomCount": 6,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 0,
+        "Title": "3-Methyl-2-butene-1-thiol"
+      }
+    ]
+  }
+}

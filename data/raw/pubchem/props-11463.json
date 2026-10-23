@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 11463,
+        "MolecularFormula": "C10H16",
+        "MolecularWeight": "136.23",
+        "SMILES": "CC1=CCC(=C(C)C)CC1",
+        "ConnectivitySMILES": "CC1=CCC(=C(C)C)CC1",
+        "InChI": "InChI=1S/C10H16/c1-8(2)10-6-4-9(3)5-7-10/h4H,5-7H2,1-3H3",
+        "InChIKey": "MOYAFQVGZZPNRA-UHFFFAOYSA-N",
+        "IUPACName": "1-methyl-4-propan-2-ylidenecyclohexene",
+        "XLogP": 2.8,
+        "ExactMass": "136.125200510",
+        "TPSA": 0,
+        "HeavyAtomCount": 10,
+        "DefinedAtomStereoCount": 0,
+        "UndefinedAtomStereoCount": 0,
+        "DefinedBondStereoCount": 0,
+        "Title": "Terpinolene"
+      }
+    ]
+  }
+}

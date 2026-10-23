@@ -1,0 +1,110 @@
+{
+  "Record": {
+    "RecordType": "CID",
+    "RecordNumber": 637566,
+    "RecordTitle": "Geraniol",
+    "Section": [
+      {
+        "TOCHeading": "Chemical and Physical Properties",
+        "Description": "Various chemical and physical properties that are experimentally determined for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+        "Section": [
+          {
+            "TOCHeading": "Experimental Properties",
+            "Description": "Various experimentally determined properties for this compound.  See also the Safety and Hazard Properties section (if available), which has additional properties pertinent to chemical safety and hazards.",
+            "Section": [
+              {
+                "TOCHeading": "Odor",
+                "Description": "The property of certain chemicals, in very small concentrations, to stimulate chemical sense receptors that sample the air or water.",
+                "URL": "https://www.britannica.com/science/odor",
+                "Information": [
+                  {
+                    "ReferenceNumber": 58,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "O'Neil, M.J. (ed.). The Merck Index - An Encyclopedia of Chemicals, Drugs, and Biologicals. Cambridge, UK:  Royal Society of Chemistry, 2013., p. 813"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "O'Neil, M.J. (ed.). The Merck Index - An Encyclopedia of Chemicals, Drugs, and Biologicals. Cambridge, UK:  Royal Society of Chemistry, 2013., p. 813",
+                        "Matched": {
+                          "PCLID": 906281956,
+                          "Citation": "O'Neil, M.J. (ed.). The Merck Index - An Encyclopedia of Chemicals, Drugs, and Biologicals. Cambridge, UK:  Royal Society of Chemistry, 2013., p. 813"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Sweet rose odor"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 58,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Larranaga, M.D., Lewis, R.J. Sr., Lewis, R.A.; Hawley's Condensed Chemical Dictionary 16th  Edition. John Wiley & Sons, Inc. Hoboken, NJ 2016., p. 665"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Larranaga, M.D., Lewis, R.J. Sr., Lewis, R.A.; Hawley's Condensed Chemical Dictionary 16th  Edition. John Wiley & Sons, Inc. Hoboken, NJ 2016., p. 665",
+                        "Matched": {
+                          "PCLID": 900162693,
+                          "Citation": "Larranaga, M.D., Lewis, R.J. Sr., Lewis, R.A.; Hawley's Condensed Chemical Dictionary 16th  Edition. John Wiley & Sons, Inc. Hoboken, NJ 2016., p. 665"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Pleasant geranium-like odor"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "ReferenceNumber": 58,
+                    "Description": "PEER REVIEWED",
+                    "Reference": [
+                      "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. V3: 1760"
+                    ],
+                    "ExtendedReference": [
+                      {
+                        "Citation": "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. V3: 1760",
+                        "Matched": {
+                          "PCLID": 900073881,
+                          "Citation": "Lewis, R.J. Sr. (ed) Sax's Dangerous Properties of Industrial Materials. 12th Edition. Wiley-Interscience, Wiley & Sons, Inc. Hoboken, NJ. 2012., p. V3: 1760"
+                        }
+                      }
+                    ],
+                    "Value": {
+                      "StringWithMarkup": [
+                        {
+                          "String": "Pleasant, floral odor"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Reference": [
+      {
+        "ReferenceNumber": 58,
+        "SourceName": "Hazardous Substances Data Bank (HSDB)",
+        "SourceID": "484",
+        "Name": "GERANIOL",
+        "Description": "The Hazardous Substances Data Bank (HSDB) is a toxicology database that focuses on the toxicology of potentially hazardous chemicals. It provides information on human exposure, industrial hygiene, emergency handling procedures, environmental fate, regulatory requirements, nanomaterials, and related areas. The information in HSDB has been assessed by a Scientific Review Panel.",
+        "URL": "https://pubchem.ncbi.nlm.nih.gov/source/hsdb/484",
+        "LicenseURL": "https://www.nlm.nih.gov/web_policies.html",
+        "IsToxnet": true,
+        "ANID": 422
+      }
+    ]
+  }
+}
