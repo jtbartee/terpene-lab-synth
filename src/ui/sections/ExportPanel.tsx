@@ -5,7 +5,7 @@ import { buildLibraryFile } from '../../chem/schema';
 import { BUSES, generateBars, type CompositionSettings } from '../../music/composer';
 import { STYLES } from '../../music/styles';
 import { SCALES } from '../../music/theory';
-import { currentParams, currentPreset, download, savePreset, slug } from '../../store/actions';
+import { composerSettings, currentParams, currentPreset, download, savePreset, slug } from '../../store/actions';
 import { getState, setTransport, toast, useStore } from '../../store/store';
 import { Panel } from '../components/bits';
 import { IconDownload, IconSave } from '../components/icons';
@@ -13,7 +13,7 @@ import { IconDownload, IconSave } from '../components/icons';
 const APP_VERSION = '0.1.0';
 
 function exportSettings(bars: number, shape: boolean): CompositionSettings {
-  const s = getState().synth.settings;
+  const s = composerSettings(getState().synth);
   // Short exports would otherwise capture only a sparse intro build, so they use the
   // style's full core arrangement; 32+ bars can be shaped as a complete piece.
   if (bars < 32) return { ...s, autonomous: false, arrangementBars: 0 };

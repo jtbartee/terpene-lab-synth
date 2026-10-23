@@ -10,7 +10,7 @@
 // weighted event system that never changes every layer at once.
 
 import { neutralParams, type ParamSet } from '../sonify/targets';
-import { chance, intBetween, pick, shuffle, stream, weighted, type Rng } from './rng';
+import { chance, hash, intBetween, pick, shuffle, stream, weighted, type Rng } from './rng';
 import { LAYERS, STYLES, type ChordKind, type Layer, type StyleDef, type StyleId } from './styles';
 import {
   METER_GROUPS, chordSymbol, colourChord, euclid, harmonyScale, inScale, keyPc, scaleIntervals, scaleNotesInRange,
@@ -56,6 +56,12 @@ export interface CompositionSettings {
   arrangementBars: number;
   autonomous: boolean;
   swing: number;
+  /**
+   * Folded into the seed so each terpene profile gets its own harmony, motifs
+   * and grooves from one seed. 0 (or absent) = the seed alone, as in Analytical
+   * mode. Derived from the profile by the store, never edited directly.
+   */
+  variant?: number;
 }
 
 export const DEFAULT_SETTINGS: CompositionSettings = {
@@ -113,6 +119,10 @@ export class Composer {
   style!: StyleDef;
   bar = 0;
 
+  /** settings.seed with the profile variant folded in; every random stream keys on this */
+  private seed = 0;
+  /** a variant change that arrived mid-piece, applied at the next phrase boundary */
+  private pendingVariant: number | null = null;
   private chord!: ChordState;
   private next!: { degree: number; kind: ChordKind };
   private padVoicing: number[] | null = null;
@@ -150,16 +160,16 @@ export class Composer {
     const rebuild = partial.style !== undefined && partial.style !== prev.style
       || partial.seed !== undefined && partial.seed !== prev.seed
       || partial.beatsPerBar !== undefined && partial.beatsPerBar !== prev.beatsPerBar;
-    if (rebuild) {
-      const b = this.bar;
-      this.init();
-      this.bar = b;
-      // mid-piece, a new style lands in its core arrangement rather than restarting a sparse intro
-      if (b > 0) {
-        for (const l of LAYERS) this.layers[l].on = false;
-        this.fillLayersStatic();
-      }
+    if (rebuild || 'variant' in partial && this.bar === 0 && (partial.variant ?? 0) !== (prev.variant ?? 0)) {
+      this.pendingVariant = null;
+      this.rebuildAt(this.bar);
       return;
+    }
+    if ('variant' in partial) {
+      // a new profile mid-piece: finish the current phrase, re-key at the next boundary
+      const next = partial.variant ?? 0;
+      this.settings = { ...this.settings, variant: prev.variant };
+      this.pendingVariant = next === (prev.variant ?? 0) ? null : next;
     }
     if (partial.key !== undefined || partial.scale !== undefined) {
       this.chord = this.makeChord(this.chord.degree, this.chord.kind, this.bar, this.chord.bars);
@@ -170,10 +180,24 @@ export class Composer {
 
   setParams(params: ParamSet) { this.params = params; }
 
+  private rebuildAt(b: number) {
+    this.init();
+    this.bar = b;
+    // mid-piece, a new style or profile lands in its core arrangement rather than restarting a sparse intro
+    if (b > 0) {
+      for (const l of LAYERS) this.layers[l].on = false;
+      this.fillLayersStatic();
+      this.energy = this.energyFor(Math.floor(b / this.style.sectionBars));
+    }
+  }
+
   /** After a pause, sustained layers (drone, pad) re-articulate on the next bar. */
   rearticulate() { this.forceArticulation = true; }
 
-  reset() { this.init(); }
+  reset() {
+    if (this.pendingVariant !== null) { this.settings = { ...this.settings, variant: this.pendingVariant }; this.pendingVariant = null; }
+    this.init();
+  }
 
   nextBar(): BarPlan {
     const b = this.bar;
@@ -184,7 +208,13 @@ export class Composer {
     // fades scheduled last bar complete now
     for (const l of LAYERS) if (this.layers[l].fading) { this.layers[l].fading = false; this.layers[l].on = false; }
 
-    if (b > 0 && b % st.phraseBars === 0) this.develop(b, development);
+    if (b > 0 && b % st.phraseBars === 0 && this.pendingVariant !== null) {
+      this.settings = { ...this.settings, variant: this.pendingVariant };
+      this.pendingVariant = null;
+      this.rebuildAt(b);
+      development.push('New profile · the piece re-keys');
+    }
+    if (b > 0 && b % this.style.phraseBars === 0) this.develop(b, development);
     if (b === this.dropUntil) { this.layers.drums.on = true; this.layers.drums.since = b; development.push('Drums return'); }
 
     this.advanceHarmony(b, development);
@@ -234,6 +264,7 @@ export class Composer {
   private init() {
     const s = this.settings;
     this.style = STYLES[s.style];
+    this.seed = s.variant ? hash(s.seed, 'variant', s.variant) : s.seed;
     this.bar = 0;
     this.motifGen = 0;
     this.arpNote = 0;
@@ -242,17 +273,17 @@ export class Composer {
     this.drumDensity = 0;
     this.dropUntil = -1;
     this.arpMutated = this.bassMutated = false;
-    const r = stream(s.seed, 'init', s.style);
+    const r = stream(this.seed, 'init', s.style);
     this.vampPair = [0, weighted(r, this.style.harmony.moves[0] ?? [[3, 1]])];
     this.percLen = pick(r, [16, 16, 12, 6]);
     this.percRot = intBetween(r, 0, 3);
     const kind = this.chordKindFor(0, 0);
-    const firstBars = this.chordDuration(stream(s.seed, 'harm', 0), 0);
+    const firstBars = this.chordDuration(stream(this.seed, 'harm', 0), 0);
     this.chord = this.makeChord(0, kind, 0, firstBars);
     this.next = this.planNext(0, firstBars);
-    this.bassMotif = this.makeBassMotif(stream(s.seed, 'bassMotif', 0));
+    this.bassMotif = this.makeBassMotif(stream(this.seed, 'bassMotif', 0));
     this.bassOriginal = this.bassMotif;
-    this.arpMotif = this.makeArpMotif(stream(s.seed, 'arpMotif', 0));
+    this.arpMotif = this.makeArpMotif(stream(this.seed, 'arpMotif', 0));
     this.arpOriginal = this.arpMotif;
     this.layers = Object.fromEntries(LAYERS.map((l) => [l, { on: false, since: 0, fading: false, level: 1, timbre: 0, filter: 0, pan: 0 }])) as Record<Layer, LayerState>;
     this.energy = this.energyFor(0);
@@ -313,7 +344,7 @@ export class Composer {
   }
 
   private chordKindFor(degree: number, section: number): ChordKind {
-    return weighted(stream(this.settings.seed, 'kind', degree, section), this.style.harmony.kinds);
+    return weighted(stream(this.seed, 'kind', degree, section), this.style.harmony.kinds);
   }
 
   /** Bars a chord lasts, snapped to powers of two so changes land on phrase grid. */
@@ -334,7 +365,7 @@ export class Composer {
 
   private planNext(fromBar: number, bars: number): { degree: number; kind: ChordKind } {
     const startNext = fromBar + bars;
-    const r = stream(this.settings.seed, 'harmNext', startNext);
+    const r = stream(this.seed, 'harmNext', startNext);
     const h = this.style.harmony;
     const cur = this.chord.degree;
     const section = Math.floor(startNext / this.style.sectionBars);
@@ -357,7 +388,7 @@ export class Composer {
     const c = this.chord;
     if (b < c.startBar + c.bars) return;
     const prevSymbol = c.symbol;
-    const bars = this.chordDuration(stream(this.settings.seed, 'harm', b), b);
+    const bars = this.chordDuration(stream(this.seed, 'harm', b), b);
     this.chord = this.makeChord(this.next.degree, this.next.kind, b, bars);
     this.next = this.planNext(b, bars);
     if (this.chord.symbol !== prevSymbol) dev.push(`Harmony moves ${prevSymbol} → ${this.chord.symbol}`);
@@ -383,7 +414,7 @@ export class Composer {
 
   private energyFor(section: number): number {
     const s = this.settings;
-    const r = stream(s.seed, 'energy', section);
+    const r = stream(this.seed, 'energy', section);
     const jitter = (r() - 0.5) * 0.12;
     if (s.arrangementBars > 0) {
       const n = Math.max(1, Math.round(s.arrangementBars / this.style.sectionBars));
@@ -395,7 +426,7 @@ export class Composer {
       else e = 0.45 + 0.5 * Math.sin(Math.PI * Math.min(1, t * 1.15));
       return clamp01(e + jitter);
     }
-    const phase = (s.seed % 7) / 7;
+    const phase = (this.seed % 7) / 7;
     return clamp01(0.58 + 0.27 * Math.sin(2 * Math.PI * (section / 6 + phase)) + jitter);
   }
 
@@ -414,7 +445,7 @@ export class Composer {
   private develop(b: number, dev: string[]) {
     const s = this.settings;
     const st = this.style;
-    const r = stream(s.seed, 'develop', b);
+    const r = stream(this.seed, 'develop', b);
     const isSection = b % st.sectionBars === 0;
     if (isSection) {
       this.energy = this.energyFor(b / st.sectionBars);
@@ -716,7 +747,7 @@ export class Composer {
     const root = this.bassRoot(c.rootPc);
     const iv = colourChord(this.tonicPc(), this.settings.scale, this.mapDegree(c.degree), 'seventh').map((pc) => (pc - c.rootPc + 12) % 12);
     const art = this.p('rhythmicArticulation');
-    const r = stream(this.settings.seed, 'bass', b);
+    const r = stream(this.seed, 'bass', b);
     const changeNext = this.chordChangesNextBar(b);
     const resolve = (rel: BassRel): number => {
       switch (rel) {
@@ -783,7 +814,7 @@ export class Composer {
       case 'updown': return pool.length > 2 ? [...pool, ...pool.slice(1, -1).reverse()] : pool;
       case 'random': {
         // constrained: a seeded walk with no repeated notes and leaps of at most an octave
-        const r = stream(this.settings.seed, 'arpRandom', this.motifGen, pool.length);
+        const r = stream(this.seed, 'arpRandom', this.motifGen, pool.length);
         const seq: number[] = [pool[0]];
         for (let i = 1; i < pool.length * 2; i++) {
           const prev = seq[i - 1];
@@ -803,7 +834,7 @@ export class Composer {
     const pool = this.arpPool();
     const seq = this.sequenceFrom(pool);
     const art = this.p('rhythmicArticulation');
-    const r = stream(this.settings.seed, 'arp', b);
+    const r = stream(this.seed, 'arp', b);
     const response = m.response && b % this.style.phraseBars >= this.style.phraseBars / 2;
     for (let s = 0; s < n; s++) {
       const g = b * n + s; // global step keeps polymetric cycles continuous across bars
@@ -821,7 +852,7 @@ export class Composer {
 
   /** Ambient: sparse events, call in a low register, response higher. */
   private genConstellation(b: number, ev: NoteEvent[], lv: number) {
-    const r = stream(this.settings.seed, 'constellation', b);
+    const r = stream(this.seed, 'constellation', b);
     const beats = this.settings.beatsPerBar;
     const density = 0.3 + 0.7 * this.settings.density;
     const count = weighted(r, [[0, 1.2 - density], [1, 1.2], [2, density], [3, density * 0.4]] as const);
@@ -848,7 +879,7 @@ export class Composer {
     const beats = this.settings.beatsPerBar;
     const v = this.padVoicing!;
     if (st.pad === 'stab') {
-      const r = stream(this.settings.seed, 'stab', b);
+      const r = stream(this.seed, 'stab', b);
       const n = this.stepsPerBar();
       const pattern = this.settings.style === 'microhouse' ? euclid(3, 16, 2) : [false, false, true, false, false, false, false, false, false, false, chance(r, 0.4), false, false, false, chance(r, 0.25), false];
       for (let s = 0; s < n; s++) {
@@ -870,7 +901,7 @@ export class Composer {
   private genDrums(b: number, ev: NoteEvent[], lv: number) {
     const s = this.settings;
     const n = this.stepsPerBar();
-    const r = stream(s.seed, 'drums', b);
+    const r = stream(this.seed, 'drums', b);
     const kit = this.style.drums;
     const groups = METER_GROUPS[s.beatsPerBar] ?? [s.beatsPerBar];
     const groupStarts: number[] = [];
@@ -941,9 +972,8 @@ export class Composer {
   }
 
   private genPerc(b: number, ev: NoteEvent[], lv: number) {
-    const s = this.settings;
     const n = this.stepsPerBar();
-    const r = stream(s.seed, 'perc', b);
+    const r = stream(this.seed, 'perc', b);
     const k = Math.max(2, Math.round(this.percLen * (0.18 + 0.3 * this.p('percTransients') + 0.2 * this.p('percComplexity'))));
     const pat = euclid(k, this.percLen, this.percRot);
     const tones = this.chord.pcs.map((pc) => 72 + ((pc - 0 + 12) % 12));
@@ -956,7 +986,7 @@ export class Composer {
 
   private genTexture(b: number, ev: NoteEvent[], lv: number) {
     const s = this.settings;
-    const r = stream(s.seed, 'texture', b);
+    const r = stream(this.seed, 'texture', b);
     const beats = s.beatsPerBar;
     const t = this.style.texture;
     const sparkle = this.p('sparkle');

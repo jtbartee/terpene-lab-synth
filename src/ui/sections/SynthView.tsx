@@ -79,7 +79,7 @@ export function SynthView() {
           <p className="small muted" style={{ margin: 0, flex: 1, minWidth: 260 }}>
             {synth.mode === 'analytical'
               ? 'Key, tempo, arrangement and seed stay fixed; profiles change only timbre and mix. Switch profiles to hear the chemical differences against one reference composition.'
-              : 'Profiles also shape density, complexity, rhythm, mutation and arrangement. Musicality comes first; the data is a guide, not a score.'}
+              : 'Each profile composes its own piece from the seed: harmony, motifs and grooves follow its terpene mix, and it also shapes density, complexity, rhythm, mutation and arrangement. Musicality comes first; the data is a guide, not a score.'}
           </p>
         </div>
       </Panel>

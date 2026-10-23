@@ -177,4 +177,54 @@ describe('profiles drive the music', () => {
     expect(strip(generateBars(base, pa, 64))).toBe(strip(generateBars(base, pb, 64)));
     expect(pa.filterBrightness).not.toBe(pb.filterBrightness); // …while timbre still differs
   });
+
+  // pitches of the melodic layers and the chord path: the piece's identity, not its density
+  const identity = (bars: BarPlan[]) => JSON.stringify(bars.map((b) => [
+    b.chord.symbol,
+    b.events.filter((e) => e.voice === 'arp' || e.voice === 'bass').map((e) => [e.voice, e.notes, e.beat]),
+  ]));
+
+  it('a profile variant gives the same seed different harmony and motifs; 0 is the seed alone', () => {
+    expect(strip(generateBars({ ...base, variant: 0 }, P, 64))).toBe(strip(generateBars(base, P, 64)));
+    const a = identity(generateBars({ ...base, variant: 11 }, P, 64));
+    expect(identity(generateBars({ ...base, variant: 11 }, P, 64))).toBe(a);
+    expect(identity(generateBars({ ...base, variant: 12 }, P, 64))).not.toBe(a);
+    for (const style of STYLE_IDS) {
+      const x = pitched(generateBars({ style, seed: 5, variant: 1 }, P, 64));
+      const y = pitched(generateBars({ style, seed: 5, variant: 2 }, P, 64));
+      const n = Math.min(x.length, y.length);
+      let diff = Math.abs(x.length - y.length);
+      for (let i = 0; i < n; i++) if (x[i] !== y[i]) diff++;
+      expect(diff / Math.max(x.length, y.length, 1)).toBeGreaterThan(0.15);
+    }
+  });
+
+  it('a new profile mid-piece finishes the phrase, then re-keys on the boundary', () => {
+    const c = new Composer({ ...base, variant: 1 }, P);
+    const before = Array.from({ length: 3 }, () => c.nextBar());
+    c.setSettings({ variant: 2 });
+    const rest = Array.from({ length: 13 }, () => c.nextBar()); // bars 3..15
+    const ref1 = generateBars({ ...base, variant: 1 }, P, 8);
+    expect(strip([...before, ...rest.slice(0, 5)])).toBe(strip(ref1)); // bars 0..7 untouched
+    expect(rest[5].index).toBe(8);
+    expect(rest[5].development).toContain('New profile · the piece re-keys');
+    expect(rest.slice(5).some((b) => b.events.length > 0)).toBe(true);
+    // reverting before the boundary cancels the change
+    const d = new Composer({ ...base, variant: 1 }, P);
+    for (let i = 0; i < 3; i++) d.nextBar();
+    d.setSettings({ variant: 2 });
+    d.setSettings({ variant: 1 });
+    const dRest = Array.from({ length: 13 }, () => d.nextBar());
+    expect(strip(dRest)).toBe(strip(generateBars({ ...base, variant: 1 }, P, 16).slice(3)));
+  });
+
+  it('reset plans from the current parameters, not the ones in force when it was built', () => {
+    const pa = computeControls(DEMO_A, preset, 'generative').params;
+    const busy = { ...pa, percComplexity: 1, percTransients: 1, sparkle: 1 };
+    const c = new Composer({ style: 'dub_techno', seed: 9 }, { ...pa, percComplexity: 0, percTransients: 0, sparkle: 0 });
+    c.setParams(busy);
+    c.reset();
+    const got = Array.from({ length: 32 }, () => c.nextBar());
+    expect(strip(got)).toBe(strip(generateBars({ style: 'dub_techno', seed: 9 }, busy, 32)));
+  });
 });

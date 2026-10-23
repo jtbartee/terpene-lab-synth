@@ -71,6 +71,8 @@ export class LivePlayer {
     const tr = Tone.getTransport();
     if (this.state === 'playing') return;
     if (this.state === 'paused') this.composer.rearticulate(); // continue from the composer's position
+    // from a stop, plan the piece afresh so it reflects the profile and settings chosen since
+    else this.composer.reset();
     tr.stop();
     tr.cancel(0);
     tr.position = 0;

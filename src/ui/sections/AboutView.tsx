@@ -6,7 +6,7 @@ import { SOURCES } from '../../chem/sources';
 import { VALIDATION_AUC } from '../../chem/similarity';
 import type { SelfTestResult } from '../../audio/selftest';
 import { getState, setTransport } from '../../store/store';
-import { currentParams } from '../../store/actions';
+import { composerSettings, currentParams } from '../../store/actions';
 import { Panel } from '../components/bits';
 
 const REFS: { key: string; text: string; doi: string }[] = [
@@ -42,7 +42,7 @@ export function AboutView() {
     try {
       const { runSelfTest } = await import('../../audio/selftest');
       const s = getState().synth;
-      setTest(await runSelfTest(s.settings, currentParams(s), s.mixer, 8));
+      setTest(await runSelfTest(composerSettings(s), currentParams(s), s.mixer, 8));
     } catch (e) { setTestErr(String((e as Error).message ?? e)); } finally { setTransport({ busy: null }); }
   }
   return (

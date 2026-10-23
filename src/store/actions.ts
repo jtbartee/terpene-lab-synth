@@ -3,11 +3,11 @@
 
 import { ANALYTE_IDS } from '../chem/analytes';
 import { DEMO_PROFILES } from '../chem/demo';
-import { deriveHypothetical, duplicateProfile, newId, nowIso } from '../chem/profile';
+import { deriveHypothetical, duplicateProfile, newId, nowIso, relativeComposition } from '../chem/profile';
 import { buildLibraryFile, parseLibraryFile, validateProfile } from '../chem/schema';
 import type { AnalyteId, Profile } from '../chem/types';
 import type { CompositionSettings } from '../music/composer';
-import { randomSeed } from '../music/rng';
+import { hash, randomSeed } from '../music/rng';
 import { STYLES, type StyleId } from '../music/styles';
 import { BUILT_IN_PRESETS, computeControls, lerpParams, type MappingPreset } from '../sonify/mapping';
 import type { ParamSet } from '../sonify/targets';
@@ -166,6 +166,31 @@ export function currentParams(s: AppState['synth']): ParamSet {
   return out;
 }
 
+/**
+ * Generative mode: profile A's composition picks its own piece (harmony, motifs,
+ * grooves) from the seed, so different profiles are different music, not one
+ * piece re-voiced. Shares are taken in 5 % steps so a small nudge in the Lab
+ * does not reshuffle everything. Analytical mode returns 0: one reference piece.
+ */
+export function profileVariant(s: AppState['synth']): number {
+  const p = s.profileA;
+  if (s.mode !== 'generative' || !p) return 0;
+  const muted = new Set(s.mutedA);
+  const comp = relativeComposition(p, ANALYTE_IDS.filter((id) => !muted.has(id)));
+  if (comp.total > 0) return hash(...ANALYTE_IDS.map((id) => (comp.covered.includes(id) ? Math.round((comp.shares[id] ?? 0) * 20) : '-'))) || 1;
+  if (p.ranking?.length) return hash('ranking', ...p.ranking.filter((id) => !muted.has(id))) || 1;
+  return 0;
+}
+
+let composerCache: { settings: CompositionSettings; variant: number; out: CompositionSettings } | null = null;
+/** The settings the Composer runs on: the user's settings plus the profile variant. */
+export function composerSettings(s: AppState['synth']): CompositionSettings {
+  const variant = profileVariant(s);
+  if (composerCache && composerCache.settings === s.settings && composerCache.variant === variant) return composerCache.out;
+  composerCache = { settings: s.settings, variant, out: { ...s.settings, variant } };
+  return composerCache.out;
+}
+
 export function applyStyle(style: StyleId) {
   const st = STYLES[style];
   setSettings({ style, bpm: st.bpm, scale: st.scale, swing: st.swing });
@@ -182,13 +207,13 @@ async function getPlayer(): Promise<LivePlayer> {
   if (player) return player;
   playerLoading ??= import('../audio/player').then(({ LivePlayer }) => {
     const s = getState().synth;
-    const p = new LivePlayer(s.settings, currentParams(s), s.mixer);
+    const p = new LivePlayer(composerSettings(s), currentParams(s), s.mixer);
     p.subscribe({
       onBar: (plan) => setState((st) => ({ transport: { ...st.transport, bar: plan, history: [...st.transport.history, plan].slice(-64) } })),
       onState: (state) => setTransport({ state }),
       onError: (error) => setTransport({ error }),
     });
-    watch((st) => st.synth.settings, (v) => p.setSettings(v));
+    watch((st) => composerSettings(st.synth), (v) => p.setSettings(v));
     watch((st) => st.synth.mixer, (v) => p.setMixer(v));
     watch((st) => st.synth, (v) => p.setParams(currentParams(v)));
     player = p;
@@ -221,7 +246,7 @@ export async function regenerate() {
   const s = getState().synth;
   if (!s.seedLocked) setSettings({ seed: randomSeed() });
   setTransport({ history: [], bar: null });
-  if (player) await player.regenerate(getState().synth.settings);
+  if (player) await player.regenerate(composerSettings(getState().synth));
 }
 
 // ------------------------------------------------------------- presets
