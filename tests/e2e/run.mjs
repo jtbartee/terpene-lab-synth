@@ -217,8 +217,11 @@ try {
     for (let i = 0; i < 5; i++) await page.keyboard.press('PageDown');
     check('knobs respond to the keyboard', (await S(() => window.__tls.getState().synth.mixer.globalFilter)) < 0.6);
     await page.screenshot({ path: `${OUT}synth-playing.png`, fullPage: true });
-    const rms = await S(() => window.__tls.liveRms());
-    check('audio keeps playing through live changes', rms > 0.002, rms?.toFixed(4));
+    // sampled over two seconds: one ~23 ms analyser frame can fall between notes
+    const live = [];
+    for (let i = 0; i < 20; i++) { live.push(await S(() => window.__tls.liveRms()) ?? 0); await sleep(100); }
+    const rms = live.reduce((a, b) => a + b, 0) / live.length;
+    check('audio keeps playing through live changes', rms > 0.002, `mean live RMS ${rms.toFixed(4)} over 2 s`);
     await page.click('.transport button[aria-label="Stop"]');
     check('development events and bars are reported', (await S(() => window.__tls.getState().transport.state)) === 'stopped');
   }
@@ -285,6 +288,43 @@ try {
       check(`no horizontal scrolling at ${w}px`, worst <= 0, `${worst}px`);
       await p2.close();
     }
+  }
+
+  if (want('engine2')) {
+    await page.goto(BASE + '#/synth');
+    await page.waitForSelector('#listening');
+    check('listening session lists three demos', (await page.$$('#listening .card')).length === 3);
+    check('the three development knobs are present', (await page.$$('[aria-label="Compositional development controls"] [role="slider"]')).length === 3);
+    await page.click('#listening button[aria-label="Audition demo B"]');
+    await page.waitForFunction(() => window.__tls.getState().transport.state === 'playing', null, { timeout: 15000 });
+    const st = await S(() => window.__tls.getState().synth);
+    check('audition loads the demo: seed, Generative mode, 128-bar arrangement', st.settings.seed === 25 && st.mode === 'generative' && st.settings.arrangementBars === 128 && st.settings.style === 'motorik', `seed ${st.settings.seed} ${st.mode} ${st.settings.arrangementBars}`);
+    // play past the intro into section A (bar 17 at 112 BPM ≈ 34 s), so the comparison covers a section change
+    await page.waitForFunction(() => (window.__tls.getState().transport.bar?.index ?? 0) >= 17, null, { timeout: 60000 });
+    // one analyser frame is ~23 ms and can fall between notes: sample the level over three seconds
+    const series = [];
+    for (let i = 0; i < 30; i++) { series.push(await S(() => window.__tls.liveRms()) ?? 0); await sleep(100); }
+    const rmsMean = series.reduce((a, b) => a + b, 0) / series.length;
+    check('the demo plays real audio', rmsMean > 0.003, `mean live RMS ${rmsMean.toFixed(4)} over 3 s (min ${Math.min(...series).toFixed(4)}, max ${Math.max(...series).toFixed(4)}) at bar ${await S(() => window.__tls.getState().transport.bar?.index + 1)}`);
+    const cells = await page.$$eval('.form-cell', (els) => els.map((e) => [e.textContent, e.classList.contains('now')]));
+    check('Now Playing shows the planned form with the current section marked', cells.length >= 5 && cells.filter((c) => c[1]).length === 1, cells.map((c) => `${c[0]}${c[1] ? '*' : ''}`).join(' > '));
+    const mat = await page.$$eval('.material dd', (els) => els.map((e) => e.textContent));
+    check('Now Playing names the groove, bass and melody in use', mat.length === 3 && mat.every((x) => x && x.length > 3), mat.join(' | '));
+    const live = await S(() => window.__tls.getState().transport.history.map((b) => JSON.stringify([b.index, b.section.name, b.material, b.chord.symbol, b.events])));
+    const offline = await S(async (n) => (await window.__tls.plan(n)).map((b) => JSON.stringify([b.index, b.section.name, b.material, b.chord.symbol, b.events])), (live.length ? JSON.parse(live[live.length - 1])[0] + 1 : 0));
+    const same = live.length > 0 && live.every((x) => offline.includes(x));
+    check('live playback follows exactly the plan an offline render uses', same, `${live.length} live bars compared`);
+    await page.screenshot({ path: `${OUT}engine2-synth.png`, fullPage: true });
+    await page.click('#listening button[aria-label="Stop demo B"]');
+    await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped');
+    check('a demo stops cleanly from its card', true);
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto(BASE + '#/synth');
+    await page.waitForSelector('#listening');
+    const sw = await S(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('synth view with the listening session has no horizontal scroll at 390px', sw <= 0, `${sw}px`);
+    await page.locator('#listening').screenshot({ path: `${OUT}engine2-listening-390.png` });
+    await page.setViewportSize({ width: 1440, height: 1000 });
   }
 
   check('no console errors', errors.length === 0, errors.slice(0, 5).join(' | '));

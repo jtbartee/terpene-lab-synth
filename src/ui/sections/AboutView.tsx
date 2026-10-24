@@ -126,7 +126,7 @@ export function AboutView() {
             <h4>Sonification</h4>
             <p>Measurement (unchanged) → feature 0–1 (relative share, or percentile among the Smith et al. flower samples) → response curve → depth → target value → bounded, smoothed audio parameter. Missing compounds disable their routes.</p>
             <h4>Composition</h4>
-            <p>Deterministic, seeded, hierarchical (bars → 8-bar phrases → 16-bar sections → arc). Scales via Tonal; chords stacked from the scale; voice-led pads; Euclidean rhythms (Toussaint 2005); weighted development events only at phrase boundaries.</p>
+            <p>Deterministic, seeded and planned before it plays (engine 2): an arrangement blueprint of sections with their own groove, bass motif, melodic motif and harmony; groove families per style; bass and melodic motifs that develop by named transformations (sequence, inversion, retrograde, fragmentation…) and return; phrases of 4, 8 or 16 bars. Scales via Tonal; chords stacked from the scale; voice-led pads; Euclidean rhythms (Toussaint 2005). Three listening demos are on the Synth page.</p>
           </div>
         </Panel>
         <Panel title="Limitations">
@@ -152,8 +152,9 @@ export function AboutView() {
           <li>Play/Stop repeatedly: no doubling, flamming or speeding up.</li>
           <li>Move a Lab fader while "Follow the Lab" is on: the change is heard without clicks.</li>
           <li>Morph A→B slowly: timbre glides; patterns change only on bar lines.</li>
-          <li>Let a piece run 5+ minutes: layers enter and leave at phrase ends; it should not loop audibly.</li>
+          <li>Let a piece run 5+ minutes: sections change at the boundaries shown in Now Playing; it should develop and return, not loop audibly.</li>
           <li>Try each style: they should differ in groove and harmony, not just effects.</li>
+          <li>Same style, different seeds (Synth → Listening session): each piece should have its own groove, bass rhythm, melody and form, and a recognisable main idea that returns.</li>
           <li>Push reverb, delay and modulation to maximum: no runaway feedback or distortion.</li>
           <li>Import an exported WAV and stems into Ableton at the stated tempo: stems line up from bar 1.</li>
         </ol>

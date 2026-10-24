@@ -17,37 +17,30 @@ Code: `src/music/` (pure TypeScript, no audio), `src/audio/` (Tone.js).
 
 Every musical decision draws from `stream(seed, purpose, position)`, a mulberry32 stream keyed by a hash. Purposes include harmony, bass, drums, arp, perc, texture, develop, energy, motifs and constellation. Layers are therefore independent: changing drum density never shifts which arpeggio notes are chosen. The same profile, settings, mapping and seed give byte-identical events; a test covers all 8 styles over 96 bars.
 
-## Hierarchy
+## Hierarchy (engine 2)
 
-steps (16ths) → beats → **bars** → **8-bar phrases** → **16-bar sections** → arrangement arc.
+steps (16ths) → beats → bars → **phrases** (4, 8 or 16 bars, seeded per piece) → **sections** (planned by a blueprint) → **cycles** (endless pieces).
 
-- **Harmony** changes only at bar starts. Static and drone styles change only at section boundaries (tested), and a krautrock piece can sit on one chord for 64+ bars. Chord durations are powers of two, so changes stay on the phrase grid.
-- **Development** happens only at phrase boundaries. Candidate events are weighted:
-  - introduce a layer, or remove one (minimum dwell of two phrases)
-  - arpeggio up or down an octave, rhythm rotation, motif mutation, return to the original motif
-  - bass ostinato variation or return
-  - pad inversion change; timbre change; slow filter open or close
-  - rhythmic density up or down; stereo shift
-  - a secondary polymetric percussion line (6-, 10-, 12- or 16-step cycle against the bar)
-  - percussion drop-out for one phrase
+The full design, the audit of v0.1 and the research behind it are in [COMPOSITION_ENGINE_2.md](COMPOSITION_ENGINE_2.md). In short:
 
-  0–3 events are sampled without replacement, scaled by *variation* and reduced by *transition smoothness*. At most one layer enters or leaves per boundary, a layer is never changed twice at once, and the arrangement is never empty.
-- **Intro:** layers enter one per phrase in the style's order, starting with two at ordinary density.
-- **Energy arc:** finite pieces run intro → rise → breakdown near the middle → peak → outro. Endless pieces follow a slow seeded wave. Energy sets how many layers are wanted.
-- **Autonomous evolution off:** the style's core arrangement is fixed; harmony still follows the style.
-- **Style change mid-piece:** the new style starts in its core arrangement, not a sparse intro.
+- **The piece is planned first.** A blueprint gives sections with roles (intro, main, variation, contrast, breakdown, build, peak, return, outro), lengths, energy, material, harmonic behaviour, a development mode and a transition. Finite arrangements are fitted to their length; endless pieces plan new cycles.
+- **A material bank is the piece's memory:** a main and a contrasting groove (`groove.ts`), bass motif (`bass.ts`) and melodic motif (`melody.ts`); stab rhythms; pad modes; harmonic loops for home and away. It also tracks developed forms, the distance from the originals and section history.
+- **Harmony** follows the section: static and drone styles hold one chord per section (the home chord, or an away chord with probability set by Harmonic movement); progression and field styles cycle a home loop, an away loop or a fresh, faster walk; vamps alternate a home or away pair. Chord kinds are fixed per degree, so a chord keeps its colour when it returns.
+- **Development:** sections switch material and arrangement at their start. Phrases inside a section make 0–3 decisions whose kind depends on the section (restrain, develop, contrast, strip, build, restate, dissolve). Motifs that drift too far return to their original form. At most one layer enters or leaves per phrase inside a section.
+- **Autonomous evolution off:** one main section with the style's core arrangement; harmony still follows the style.
+- **Style or profile change mid-piece:** the new plan lands in its main material and core arrangement, not a sparse intro.
 
 ## Layers
 
 | Layer | Behaviour |
 |---|---|
-| Drone | Root + scale-snapped intervals; re-articulated at chord changes and phrase starts; two alternating voices cross-fade |
-| Bass | Per-style ostinato motif (motorik 8ths, dub sub, Berlin 16th sequence, walking, drone, micro stabs); root/third/fifth/seventh/octave; stepwise scale approach note before chord changes |
-| Arpeggiator | Pool of chord tones (+9th at high complexity) over 1–3 octaves. Orders: up, down, up/down, constrained random, as-played (pad voicing), stored pattern. Euclidean rhythm over 4–16 slots. Divisions 16th / 8th / dotted 8th (polymetric) / quarter. Gate, rotation, register, mutation, call-and-response in the second half of a phrase. "Constellation" mode: sparse call/response notes for ambient |
-| Pads | Voice-led sustained chords (capped at phrase length), swells every two bars, or dub/micro off-beat stabs |
-| Drums | Per-style kit logic, swing, velocity humanisation, restrained fills at phrase ends |
-| Perc | Euclidean tuned percussion, possibly in a different cycle length from the bar |
-| Texture | Seeded clicks, rare metallic pings on scale tones, shimmer on chord tones; continuous noise beds in the engine |
+| Drone | Root + scale-snapped intervals; re-articulated at chord changes and phrase starts; two alternating voices cross-fade; lowered in breakdowns |
+| Bass | A motif from the style's bass family (11 archetypes) chosen to interlock with the kick; rhythm, lengths, accents, articulation and pitches vary independently; mutations change rhythm as well as pitch; stepwise approach into chord changes |
+| Melody (arp voice) | An arpeggio figure (rhythm × contour cell, possibly phasing) or a melodic hook (riff, call and response, sentence, period, constellation); motivic transformations; rests; a second motif can answer the first |
+| Pads | Voice-led sustained chords, swells, stab rhythms (main and contrasting), or off-beat chord pulses in contrasting sections |
+| Drums | A groove from the kit's family: a 1–2-bar cycle with fixed detail and ghost positions, feel (swing, lay-back), fills, section transitions |
+| Perc | Euclidean tuned percussion from the groove or the piece, possibly in a cycle against the bar |
+| Texture | Seeded clicks, metallic pings and shimmer, more exposed in breakdowns |
 
 ## Styles (different rules, not presets)
 

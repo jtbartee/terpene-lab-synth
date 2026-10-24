@@ -10,7 +10,16 @@
 - **Phase 6 — Production:** WAV (16/24-bit with metadata), composition presets, responsive layout, audio self-test, documentation.
 - **Phase 7 — Advanced:** stems (ZIP), MIDI export (spec-correct key signature), Web MIDI learn, extra compounds (γ- and α-terpinene) and a fourth chemical family view.
 
+## Done (v0.2.0, 2026-10-23) — composition engine 2
+
+- Audit of why v0.1 pieces sounded alike (fixed drum templates, fixed bass rhythms, pitch-only mutation, sections without material). See [COMPOSITION_ENGINE_2.md](COMPOSITION_ENGINE_2.md).
+- Arrangement blueprints (7), groove families (6 kits, 33 archetypes) with variation operators, 11 bass archetypes with rhythmic mutation, melodic hooks and arpeggio figures with motivic transformation, section-aware development, musical memory with returns, endless cycles of related material.
+- Controls: Groove diversity, Structure, Motif evolution. Now Playing shows the form and the material in use.
+- Diversity metrics and tests against the v0.1 baseline; three listening demos with a feedback form; demo renderer.
+
 ## Next
+
+- **Owner listening pass of engine 2** (Synth → Listening session) and tuning of archetype weights, section lengths and thresholds from it.
 
 - Human listening pass and tuning of style weights from it.
 - Real-device testing on Safari/iOS and Android Chrome; hardware MIDI controller test.

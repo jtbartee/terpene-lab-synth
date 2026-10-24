@@ -5,3 +5,4 @@ dist
 tests/e2e/out
 data/raw/smith
 data/raw/ct
+demos/

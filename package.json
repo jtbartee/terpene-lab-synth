@@ -1,7 +1,7 @@
 {
   "name": "terpene-lab-synth",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TERPENE LAB + TERPENE SYNTH: a scientific cannabis-chemistry explorer and a generative electronic music instrument driven by terpene profiles",
   "type": "module",
   "scripts": {
@@ -12,6 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "node tests/e2e/run.mjs",
+    "report:diversity": "REPORT=1 vitest run tests/music/report.test.ts",
+    "render:demos": "node tests/e2e/render-demos.mjs",
     "data:pubchem": "node scripts/fetch-pubchem.mjs",
     "data:smith": "node scripts/build-smith.mjs",
     "data:ct": "node scripts/build-ct.mjs",

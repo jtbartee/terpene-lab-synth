@@ -338,6 +338,20 @@ dialog.drawer::backdrop { background: rgba(5, 6, 4, 0.6); }
 .tl-cells i { background: #1a1e17; border-radius: 1px; }
 .tl-cells i.on { background: var(--olive); }
 .tl-cells i.now { outline: 1px solid var(--amber); }
+.form-strip { display: flex; gap: 2px; min-width: 0; }
+.form-cell {
+  flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 10.5px; padding: 3px 5px; border-radius: 2px; background: var(--panel-3); color: var(--muted);
+  border-bottom: 2px solid var(--line-2);
+}
+.form-cell.role-main, .form-cell.role-return { border-bottom-color: var(--amber-dim); }
+.form-cell.role-contrast { border-bottom-color: var(--violet); }
+.form-cell.role-breakdown, .form-cell.role-outro, .form-cell.role-intro { border-bottom-color: var(--teal); }
+.form-cell.role-peak, .form-cell.role-build { border-bottom-color: var(--amber); }
+.form-cell.now { background: var(--panel-2); color: var(--text); outline: 1px solid var(--amber); }
+.material { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 2px 8px; margin: 0; }
+.material dt { color: var(--muted); }
+.material dd { margin: 0; color: var(--text-2); overflow-wrap: anywhere; }
 .events-log { max-height: 160px; overflow-y: auto; font-size: 12.5px; display: flex; flex-direction: column; gap: 3px; }
 .events-log div { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 8px; color: var(--text-2); }
 .events-log b { font-family: var(--font-mono); color: var(--amber); font-weight: 400; }

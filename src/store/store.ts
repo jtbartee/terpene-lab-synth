@@ -37,6 +37,8 @@ export interface SynthPreset {
   mapping: MappingPreset;
   mixer: MixerState;
   favorite?: boolean;
+  /** composition engine that made it (absent = 1, the v0.1 engine); same settings play differently across engines */
+  engine?: number;
 }
 
 export interface LabState {

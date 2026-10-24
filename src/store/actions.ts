@@ -2,11 +2,12 @@
 // and the audio bridge (lazy-loaded player kept in sync with the store).
 
 import { ANALYTE_IDS } from '../chem/analytes';
-import { DEMO_PROFILES } from '../chem/demo';
+import { DEMO_A, DEMO_PROFILES } from '../chem/demo';
 import { deriveHypothetical, duplicateProfile, newId, nowIso, relativeComposition } from '../chem/profile';
 import { buildLibraryFile, parseLibraryFile, validateProfile } from '../chem/schema';
 import type { AnalyteId, Profile } from '../chem/types';
-import type { CompositionSettings } from '../music/composer';
+import { DEFAULT_SETTINGS, ENGINE_VERSION, type CompositionSettings } from '../music/composer';
+import { DEMO_SETTINGS, type ListeningDemo } from '../music/demos';
 import { hash, randomSeed } from '../music/rng';
 import { STYLES, type StyleId } from '../music/styles';
 import { BUILT_IN_PRESETS, computeControls, lerpParams, type MappingPreset } from '../sonify/mapping';
@@ -242,6 +243,16 @@ export function stop() {
   setTransport({ bar: null, history: [] });
 }
 
+/** Loads a listening demo (Profile A, Generative mode, default mapping, its seed) and plays it from the top. */
+export async function auditionDemo(d: ListeningDemo) {
+  stop();
+  setSynth({
+    profileA: DEMO_A, mutedA: [], followLab: false, morphEnabled: false, mode: 'generative', mapping: BUILT_IN_PRESETS[0], seedLocked: true,
+    settings: { ...DEFAULT_SETTINGS, ...DEMO_SETTINGS, seed: d.seed },
+  });
+  await play();
+}
+
 export async function regenerate() {
   const s = getState().synth;
   if (!s.seedLocked) setSettings({ seed: randomSeed() });
@@ -256,7 +267,7 @@ export function currentPreset(name: string): SynthPreset {
   return {
     schema: 'terpene-lab-synth/preset@1', id: newId('pre'), name, createdAt: nowIso(),
     profileA: s.profileA, profileB: s.profileB, morph: s.morph, morphEnabled: s.morphEnabled, mode: s.mode,
-    settings: s.settings, mapping: s.mapping, mixer: s.mixer,
+    settings: s.settings, mapping: s.mapping, mixer: s.mixer, engine: ENGINE_VERSION,
   };
 }
 
@@ -270,9 +281,12 @@ export async function savePreset(name: string) {
 export function loadPreset(pr: SynthPreset) {
   setSynth({
     profileA: pr.profileA, profileB: pr.profileB, morph: pr.morph, morphEnabled: pr.morphEnabled, mode: pr.mode,
-    settings: { ...pr.settings } as CompositionSettings, mapping: pr.mapping, mixer: pr.mixer, seedLocked: true, followLab: false, mutedA: [],
+    // presets saved before engine 2 lack the newer controls: they take the defaults
+    settings: { ...DEFAULT_SETTINGS, ...pr.settings } as CompositionSettings, mapping: pr.mapping, mixer: pr.mixer, seedLocked: true, followLab: false, mutedA: [],
   });
-  toast(`Loaded "${pr.name}". Press Play to hear it.`);
+  toast((pr.engine ?? 1) < ENGINE_VERSION
+    ? `Loaded "${pr.name}". It was saved with composition engine ${pr.engine ?? 1}; engine ${ENGINE_VERSION} composes a different piece from the same settings.`
+    : `Loaded "${pr.name}". Press Play to hear it.`);
 }
 
 export async function deletePreset(id: string) {

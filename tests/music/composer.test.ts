@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEMO_A, DEMO_B } from '../../src/chem/demo';
 import { Composer, PITCHED_VOICES, generateBars, type BarPlan, type CompositionSettings } from '../../src/music/composer';
-import { STYLE_IDS, STYLES } from '../../src/music/styles';
+import { STYLE_IDS } from '../../src/music/styles';
 import { SCALES, inScale, keyPc } from '../../src/music/theory';
 import { BUILT_IN_PRESETS, computeControls } from '../../src/sonify/mapping';
 import { neutralParams } from '../../src/sonify/targets';
@@ -81,14 +81,15 @@ describe('scale and event validity', () => {
 });
 
 describe('structure', () => {
-  it('development happens only at phrase boundaries; at most one layer enters or leaves at once', () => {
+  it('development happens only at phrase boundaries; inside a section at most one layer enters or leaves at once', () => {
     for (const style of STYLE_IDS) {
       const bars = generateBars({ style, seed: 11, variation: 1 }, P, 256);
       for (const b of bars) {
         const arrangement = b.development.filter((d) => !d.startsWith('Harmony') && !d.startsWith('Drums return'));
-        if (b.index % STYLES[style].phraseBars !== 0) expect(arrangement, `${style} bar ${b.index}`).toEqual([]);
+        if (b.phraseBar !== 0) expect(arrangement, `${style} bar ${b.index}`).toEqual([]);
         const inOut = b.development.filter((d) => /enters|drops out/.test(d) && !d.startsWith('A secondary'));
-        expect(inOut.length).toBeLessThanOrEqual(2); // intro entry + at most one balancing change
+        // a section start may re-arrange a few layers at once (a breakdown, a return); a phrase inside a section moves one
+        expect(inOut.length, `${style} bar ${b.index}`).toBeLessThanOrEqual(b.section.bar === 0 ? 4 : 1);
       }
     }
   });
@@ -97,7 +98,7 @@ describe('structure', () => {
     for (const style of ['motorik', 'dub_techno', 'microhouse', 'drone'] as const) {
       const bars = generateBars({ style, seed: 21, harmonicMovement: 1 }, P, 256);
       for (let i = 1; i < bars.length; i++) {
-        if (bars[i].chord.symbol !== bars[i - 1].chord.symbol) expect(i % 16, `${style} bar ${i}`).toBe(0);
+        if (bars[i].chord.symbol !== bars[i - 1].chord.symbol) expect(bars[i].section.bar, `${style} bar ${i}`).toBe(0);
       }
     }
   });
@@ -126,8 +127,8 @@ describe('structure', () => {
     const bars = generateBars({ style: 'kosmische', seed: 13, arrangementBars: 128 }, P, 128);
     for (const b of bars) expect(Object.values(b.layers).some((l) => l.on) || b.events.length > 0).toBe(true);
     expect(bars[127].final).toBe(true);
-    expect(bars[127].section.name).toBe('Outro');
-    expect(bars[0].section.name).toBe('Intro');
+    expect(bars[127].section.role).toBe('outro');
+    expect(['intro', 'main']).toContain(bars[0].section.role);
   });
 
   it('the motorik template has kick on 1 and 3, backbeat on 2 and 4, and steady eighth hats', () => {
@@ -202,13 +203,15 @@ describe('profiles drive the music', () => {
   it('a new profile mid-piece finishes the phrase, then re-keys on the boundary', () => {
     const c = new Composer({ ...base, variant: 1 }, P);
     const before = Array.from({ length: 3 }, () => c.nextBar());
+    const pb = before[0].phraseBars; // the phrase length is part of the plan (4, 8 or 16 bars)
     c.setSettings({ variant: 2 });
-    const rest = Array.from({ length: 13 }, () => c.nextBar()); // bars 3..15
-    const ref1 = generateBars({ ...base, variant: 1 }, P, 8);
-    expect(strip([...before, ...rest.slice(0, 5)])).toBe(strip(ref1)); // bars 0..7 untouched
-    expect(rest[5].index).toBe(8);
-    expect(rest[5].development).toContain('New profile · the piece re-keys');
-    expect(rest.slice(5).some((b) => b.events.length > 0)).toBe(true);
+    const rest = Array.from({ length: pb + 8 }, () => c.nextBar()); // bars 3..
+    const ref1 = generateBars({ ...base, variant: 1 }, P, pb);
+    expect(strip([...before, ...rest.slice(0, pb - 3)])).toBe(strip(ref1)); // the rest of the phrase is untouched
+    const at = rest[pb - 3];
+    expect(at.index).toBe(pb);
+    expect(at.development).toContain('New profile · the piece re-keys');
+    expect(rest.slice(pb - 3).some((b) => b.events.length > 0)).toBe(true);
     // reverting before the boundary cancels the change
     const d = new Composer({ ...base, variant: 1 }, P);
     for (let i = 0; i < 3; i++) d.nextBar();

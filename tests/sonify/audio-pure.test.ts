@@ -157,8 +157,10 @@ describe('export encoders', () => {
     const expectedBass = bars.flatMap((b) => b.events.filter((e) => e.voice === 'bass'));
     expect(bass.notes.length).toBe(expectedBass.length);
     const ppq = midi.header.ppq;
-    const firstBar1 = bars[1].events.find((e) => e.voice === 'bass')!;
-    expect(bass.notes.some((n) => n.ticks === Math.round((4 + firstBar1.beat) * ppq) && n.midi === firstBar1.notes[0])).toBe(true);
+    // the first bar after bar 0 with bass (the arrangement plan decides when the bass enters)
+    const barB = bars.find((b) => b.index > 0 && b.events.some((e) => e.voice === 'bass'))!;
+    const first = barB.events.find((e) => e.voice === 'bass')!;
+    expect(bass.notes.some((n) => n.ticks === Math.round((4 * barB.index + first.beat) * ppq) && n.midi === first.notes[0])).toBe(true);
     for (const t of midi.tracks) for (const n of t.notes) { expect(n.durationTicks).toBeGreaterThan(0); expect(n.velocity).toBeGreaterThan(0); }
   });
 

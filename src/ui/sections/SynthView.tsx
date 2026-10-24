@@ -14,6 +14,7 @@ import { IconDice, IconLock, IconPause, IconPlay, IconRegen, IconStop, IconUnloc
 import { Knob } from '../components/Knob';
 import { Scope } from '../viz/Scope';
 import { ExportPanel } from './ExportPanel';
+import { ListeningPanel } from './ListeningPanel';
 import { MappingMatrix } from './MappingMatrix';
 import { MidiPanel } from './MidiPanel';
 import { NowPlaying } from './NowPlaying';
@@ -125,13 +126,19 @@ export function SynthView() {
             {SCALES.find((x) => x.id === s.scale)?.note && <p className="tiny faint" style={{ margin: 0 }}>{SCALES.find((x) => x.id === s.scale)!.note}</p>}
             <p className="small muted" style={{ margin: 0 }}>{style.blurb} <span className="faint">Research references: {style.influences}.</span></p>
             <div className="knob-row" aria-label="Composition controls">
-              <Knob label="Complexity" value={s.complexity} onChange={(v) => setSettings({ complexity: v })} defaultValue={0.5} format={pct} controlId="complexity" />
-              <Knob label="Density" value={s.density} onChange={(v) => setSettings({ density: v })} defaultValue={0.55} format={pct} controlId="density" />
-              <Knob label="Variation" value={s.variation} onChange={(v) => setSettings({ variation: v })} defaultValue={0.5} format={pct} controlId="variation" />
+              <Knob label="Complexity" value={s.complexity} onChange={(v) => setSettings({ complexity: v })} defaultValue={0.5} format={pct} controlId="complexity" title="Detail inside the patterns: ghost notes, sixteenths, motif length, arpeggio span" />
+              <Knob label="Density" value={s.density} onChange={(v) => setSettings({ density: v })} defaultValue={0.55} format={pct} controlId="density" title="How many layers play and how many notes they play" />
+              <Knob label="Variation" value={s.variation} onChange={(v) => setSettings({ variation: v })} defaultValue={0.5} format={pct} controlId="variation" title="How many small changes happen at each phrase boundary" />
               <Knob label="Harmonic movement" value={s.harmonicMovement} onChange={(v) => setSettings({ harmonicMovement: v })} defaultValue={0.4} format={pct} controlId="harmonic" />
               <Knob label="Rhythm intensity" value={s.rhythmIntensity} onChange={(v) => setSettings({ rhythmIntensity: v })} defaultValue={0.6} format={pct} controlId="rhythmIntensity" />
               <Knob label="Drone intensity" value={s.droneIntensity} onChange={(v) => setSettings({ droneIntensity: v })} defaultValue={0.5} format={pct} controlId="droneIntensity" />
               <Knob label="Swing" value={s.swing} onChange={(v) => setSettings({ swing: v })} defaultValue={0} max={0.6} format={(v) => `${Math.round(v * 100)}`} controlId="swing" />
+            </div>
+            <div className="knob-row" aria-label="Compositional development controls">
+              <Knob label="Groove diversity" value={s.grooveDiversity ?? 0.5} onChange={(v) => setSettings({ grooveDiversity: v })} defaultValue={0.5} format={pct} controlId="grooveDiversity" color="var(--teal)" title="How far rhythmic identities range: 0 keeps the style's signature groove and bass rhythm; higher draws from the whole groove family and gives contrasting sections their own grooves" />
+              <Knob label="Structure" value={s.structure ?? 0.5} onChange={(v) => setSettings({ structure: v })} defaultValue={0.5} format={pct} controlId="structure" color="var(--teal)" title="Structural development: low favours long hypnotic forms; high favours contrasting sections and new material" />
+              <Knob label="Motif evolution" value={s.motifEvolution ?? 0.5} onChange={(v) => setSettings({ motifEvolution: v })} defaultValue={0.5} format={pct} controlId="motifEvolution" color="var(--teal)" title="How far a motif develops before it returns to its original form" />
+              <p className="tiny faint" style={{ margin: 0, flex: '1 1 220px', alignSelf: 'center' }}>These three shape the plan of the next piece (press Stop then Play, or Regenerate). While playing they steer the ongoing development.</p>
             </div>
           </div>
         </Panel>
@@ -165,6 +172,8 @@ export function SynthView() {
         </Panel>
         <NowPlaying />
       </div>
+
+      <ListeningPanel />
 
       <MappingMatrix controls={controlsA} />
       <div className="grid synth-grid">

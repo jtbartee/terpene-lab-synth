@@ -6,7 +6,9 @@ Static single-page app: React 19 + TypeScript 5.9 + Vite 8, with Tone.js 15 for 
 src/
   chem/      science engine — types, analyte registry, units, profile maths, similarity,
              aroma, schemas, dataset adapters, demo profiles (no React, no audio)
-  music/     composition engine — seeded RNG, theory, styles, Composer (no audio)
+  music/     composition engine — seeded RNG, theory, styles, Composer; engine 2 adds
+             arrangement blueprints, groove families, bass and melody motifs, analysis
+             metrics and listening demos (no audio)
   sonify/    mapping engine — targets, features, curves, presets
   audio/     Tone.js engine, sequencer, live player, offline render, WAV/MIDI/ZIP
              encoders, self-test (lazy-loaded after a user gesture)

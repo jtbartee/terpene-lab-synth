@@ -20,6 +20,12 @@ import { composerSettings, currentParams, getLivePlayer } from './store/actions'
     const s = getState().synth;
     return runSelfTest(composerSettings(s), currentParams(s), s.mixer, bars);
   },
+  /** the plan the current settings produce offline (bar summaries), to compare with live playback */
+  plan: async (n: number) => {
+    const { generateBars } = await import('./music/composer');
+    const s = getState().synth;
+    return generateBars(composerSettings(s), currentParams(s), n);
+  },
   liveRms: () => {
     const w = getLivePlayer()?.analysers().waveform;
     if (!w) return null;
