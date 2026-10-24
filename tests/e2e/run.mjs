@@ -318,6 +318,22 @@ try {
     await page.click('#listening button[aria-label="Stop demo B"]');
     await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped');
     check('a demo stops cleanly from its card', true);
+    // a finished piece rings out: no bar after the last, sound continues briefly, then the transport stops
+    await S(() => window.__tls.setSettings({ arrangementBars: 32, bpm: 180, style: 'motorik', autonomous: true }));
+    await page.click('.transport button[aria-label="Play"]');
+    await page.waitForFunction(() => window.__tls.getState().transport.bar?.index === 31, null, { timeout: 90000 });
+    const barSec = 4 * 60 / 180;
+    await sleep(barSec * 1000 + 700); // into the ring-out
+    const ring = [];
+    for (let i = 0; i < 8; i++) { ring.push(await S(() => window.__tls.liveRms()) ?? 0); await sleep(100); }
+    const ringMean = ring.reduce((a, b) => a + b, 0) / ring.length;
+    const stateRinging = await S(() => window.__tls.getState().transport.state);
+    const lastIdx = await S(() => window.__tls.getState().transport.bar?.index);
+    check('a finished piece rings out after its last bar instead of cutting', ringMean > 0.0015 && stateRinging === 'playing', `mean RMS ${ringMean.toFixed(4)} 0.7–1.5 s after the end, state ${stateRinging}`);
+    check('nothing plays after the final bar', lastIdx === 31, `last bar shown ${lastIdx + 1}`);
+    await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped', null, { timeout: 10000 });
+    check('the transport stops by itself after the ring-out', true);
+
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto(BASE + '#/synth');
     await page.waitForSelector('#listening');

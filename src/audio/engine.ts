@@ -61,11 +61,15 @@ class DroneLayer {
 }
 
 export class SynthEngine {
-  readonly master = new Tone.Gain(1);
+  // −2 dB of headroom into the master chain, so a kick landing on a loud bass note rarely reaches the limiter
+  readonly master = new Tone.Gain(0.8);
   private readonly highpass = new Tone.Filter({ type: 'highpass', frequency: 28, rolloff: -24 });
   private readonly globalFilter = new Tone.Filter({ type: 'lowpass', frequency: 20000, rolloff: -12 });
   private readonly compressor = new Tone.Compressor({ threshold: -14, ratio: 2.5, attack: 0.02, release: 0.25, knee: 6 });
-  private readonly limiter = new Tone.Limiter(-1);
+  // Tone.Limiter's 10 ms release is shorter than one period of a 55 Hz kick, so the gain moved
+  // *inside* each waveform and kicks that hit it crackled. A 150 ms release turns the level down
+  // without bending the waveform.
+  private readonly limiter = new Tone.Compressor({ threshold: -1.5, ratio: 20, attack: 0.002, release: 0.15, knee: 1 });
   private readonly volume = new Tone.Gain(1);
   readonly waveform: Tone.Analyser | null;
   readonly fft: Tone.Analyser | null;

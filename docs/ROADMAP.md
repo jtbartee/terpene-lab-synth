@@ -17,6 +17,11 @@
 - Controls: Groove diversity, Structure, Motif evolution. Now Playing shows the form and the material in use.
 - Diversity metrics and tests against the v0.1 baseline; three listening demos with a feedback form; demo renderer.
 
+## Done (v0.2.1, 2026-10-23) — from the owner's first listening notes
+
+- Kick crackle: a slow-release limiter and 2 dB more headroom (cause measured in the rendered demos).
+- Proper endings: resolving or "button" endings on the tonic, a ring-out instead of a cut, nothing scheduled after the final bar.
+
 ## Next
 
 - **Owner listening pass of engine 2** (Synth → Listening session) and tuning of archetype weights, section lengths and thresholds from it.

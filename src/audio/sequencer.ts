@@ -44,6 +44,7 @@ export class Sequencer {
   start() {
     this.clear();
     this.running = true;
+    this.ended = false;
     this.generated = 0;
     const tr = this.transport;
     const barTicks = () => this.composer.settings.beatsPerBar * tr.PPQ;
@@ -55,9 +56,11 @@ export class Sequencer {
     }, '1m', 0);
   }
 
+  private ended = false;
+
   private scheduleNext(startTick: number) {
     const max = this.hooks.maxBars;
-    if (max != null && this.generated >= max) return;
+    if (this.ended || (max != null && this.generated >= max)) return;
     const plan = this.composer.nextBar();
     this.generated++;
     this.hooks.onBarPlanned?.(plan);
@@ -76,6 +79,8 @@ export class Sequencer {
       this.onceIds.push(tr.scheduleOnce((t) => this.engine.trigger(e, t, spb()), `${tick}i`));
     }
     if (plan.final || (max != null && this.generated >= max)) {
+      // nothing is scheduled after the final bar: its notes ring out instead of a new bar starting and being cut
+      this.ended = true;
       const endTick = startTick + beats * ppq;
       this.onceIds.push(tr.scheduleOnce((t) => this.hooks.onEnd?.(t), `${endTick}i`));
     }

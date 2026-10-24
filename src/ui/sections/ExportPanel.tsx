@@ -10,7 +10,7 @@ import { getState, setTransport, toast, useStore } from '../../store/store';
 import { Panel } from '../components/bits';
 import { IconDownload, IconSave } from '../components/icons';
 
-const APP_VERSION = '0.2.0';
+const APP_VERSION = '0.2.1';
 
 function exportSettings(bars: number, shape: boolean): CompositionSettings {
   const s = composerSettings(getState().synth);

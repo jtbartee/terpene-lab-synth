@@ -8,12 +8,13 @@ import '@fontsource/ibm-plex-sans-condensed/600.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import './styles/global.css';
 import { App } from './ui/App';
-import { getState } from './store/store';
+import { getState, setSettings } from './store/store';
 import { composerSettings, currentParams, getLivePlayer } from './store/actions';
 
 // Small inspection hook used by the automated browser tests (read-only helpers).
 (window as unknown as Record<string, unknown>).__tls = {
   getState,
+  setSettings,
   player: () => getLivePlayer(),
   selfTest: async (bars = 8) => {
     const { runSelfTest } = await import('./audio/selftest');

@@ -62,8 +62,8 @@ export async function renderComposition(o: RenderOptions): Promise<RenderResult>
         a.fx.reverbDecay = ap.fx.reverbDecay; // keep the IR fixed during the render
         engine.apply(a, Math.max(a.ramp, 1.5));
       },
-      // dry voices fade over 1.5 s at the end; reverb and delay tails ring into the tail
-      onEnd: (time) => engine.silence(time, 1.5),
+      // the final chord rings for 1.5 s, then the dry voices fade over 2 s; reverb and delay tails ring into the tail
+      onEnd: (time) => engine.silence(time + Math.min(1.5, tail * 0.35), Math.min(2, tail * 0.5)),
     });
     seq.start();
     transport.start(0);

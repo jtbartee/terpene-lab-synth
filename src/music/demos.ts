@@ -16,7 +16,7 @@ export interface ListeningDemo {
   form: string;
   listenFor: string[];
   /** checked by the demo test against the generated plan */
-  expect: { blueprint: string; mainGroove: string; mainBass: string; contrastGroove?: string; contrastBass?: string };
+  expect: { blueprint: string; mainGroove: string; mainBass: string; contrastGroove?: string; contrastBass?: string; ending: 'resolve' | 'button' };
 }
 
 export const DEMO_SETTINGS: Partial<CompositionSettings> = {
@@ -34,8 +34,9 @@ export const LISTENING_DEMOS: ListeningDemo[] = [
       'A1–A3 vary the kick placement and hat accents; the melody keeps its four-bar shape.',
       'Bar 49: the drums fall away, the bass holds long notes and the melody plays at half speed.',
       'Bar 89: the original groove, bass and melody return unchanged.',
+      'Bar 113: the outro resolves — the drums leave, then the bass; melody, pad and drone close on the home chord and ring out.',
     ],
-    expect: { blueprint: 'Hypnotic evolution', mainGroove: 'Straight driving motorik', mainBass: 'Syncopated bass' },
+    expect: { blueprint: 'Hypnotic evolution', mainGroove: 'Straight driving motorik', mainBass: 'Syncopated bass', ending: 'resolve' },
   },
   {
     id: 'B', title: 'B · Minimal pulse, contrasting B section', seed: 25,
@@ -46,20 +47,22 @@ export const LISTENING_DEMOS: ListeningDemo[] = [
       'B (bar 41): the harmony moves, a straight motorik backbeat appears, the bass turns into long notes with gaps and a skipping arpeggio replaces the riff.',
       'A′ (bar 65): the first section comes back as it was.',
       'B′ (bar 89): the B groove returns with the A riff answered by the B arpeggio.',
+      'Outro (bar 105): one layer leaves every four bars until melody, pad and drone close on A minor.',
     ],
-    expect: { blueprint: 'Two-part exploration', mainGroove: 'Minimal motorik pulse', mainBass: 'Eighth-note ostinato', contrastGroove: 'Straight driving motorik', contrastBass: 'Sustained notes with gaps' },
+    expect: { blueprint: 'Two-part exploration', mainGroove: 'Minimal motorik pulse', mainBass: 'Eighth-note ostinato', contrastGroove: 'Straight driving motorik', contrastBass: 'Sustained notes with gaps', ending: 'resolve' },
   },
   {
     id: 'C', title: 'C · Bass-driven jam with extended development', seed: 140,
     summary: 'A krautrock-jam form led by an eighth-note bass over a four-on-the-floor kick, with a contrasting galloping sequence and an extended improvisation before the original groove returns.',
-    form: 'Primary groove → Motif development → Contrasting section → Extended improvisation → Original groove → Fade',
+    form: 'Primary groove → Motif development → Contrasting section → Extended improvisation → Original groove → Ending',
     listenFor: [
       'It starts in the groove: no intro, the bass drives from bar 1.',
       'Bar 25: the groove gets busier and the bass line\'s contour turns.',
       'Bar 41: a sparse kick, a galloping bass (an eighth and two sixteenths) and a rising arpeggio in pairs — a different texture.',
       'Bar 65: a long improvisation where the bass shifts onsets and two motifs answer each other.',
       'Bar 97: the original groove, bass and melody return.',
+      'The last two bars: a snare roll, then the whole band lands on one final chord and lets it ring.',
     ],
-    expect: { blueprint: 'Krautrock jam', mainGroove: 'Bass-driven motorik', mainBass: 'Eighth-note ostinato', contrastGroove: 'Sparse motorik', contrastBass: 'Galloping sequence' },
+    expect: { blueprint: 'Krautrock jam', mainGroove: 'Bass-driven motorik', mainBass: 'Eighth-note ostinato', contrastGroove: 'Sparse motorik', contrastBass: 'Galloping sequence', ending: 'button' },
   },
 ];

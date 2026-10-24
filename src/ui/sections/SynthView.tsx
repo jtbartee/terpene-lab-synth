@@ -167,7 +167,7 @@ export function SynthView() {
           <div className="stack" style={{ gap: 8 }}>
             <Scope kind="wave" label="Oscilloscope of the master output" />
             <Scope kind="fft" label="Spectrum of the master output" />
-            <p className="tiny faint" style={{ margin: 0 }}>Master chain: sub high-pass (28 Hz) → gentle compressor → limiter at −1 dBFS. Delay feedback is capped and soft-clipped.</p>
+            <p className="tiny faint" style={{ margin: 0 }}>Master chain: sub high-pass (28 Hz) → gentle compressor → limiter at −1.5 dBFS with a slow release (no crackle on kicks). Delay feedback is capped and soft-clipped.</p>
           </div>
         </Panel>
         <NowPlaying />

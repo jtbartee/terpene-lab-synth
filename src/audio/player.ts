@@ -12,6 +12,9 @@ import { Sequencer } from './sequencer';
 
 export type PlayState = 'stopped' | 'playing' | 'paused';
 
+/** Seconds a finished piece's last chord rings before the fade. */
+const RING_OUT = 3;
+
 export interface PlayerListener {
   onBar?: (plan: BarPlan) => void;
   onState?: (s: PlayState) => void;
@@ -91,7 +94,10 @@ export class LivePlayer {
         this.engine!.apply(ap, Math.max(ap.ramp, 1.5));
       },
       onEnd: (time) => {
-        Tone.getDraw().schedule(() => this.stop(), time + 0.05);
+        // a finished piece rings out: the final chord's release and the reverb tail play,
+        // then the voices fade gently before the transport stops
+        this.engine!.silence(time + RING_OUT, 1.5);
+        Tone.getDraw().schedule(() => { if (this.state === 'playing') this.stop(); }, time + RING_OUT + 1.6);
       },
     });
     this.seq.start();

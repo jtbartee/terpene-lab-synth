@@ -28,6 +28,8 @@ describe('listening demos', () => {
         expect(base(bars[con.index + 2].material.bass)).toBe(d.expect.contrastBass);
       }
       expect(bars[127].final).toBe(true);
+      const button = bars[127].events.some((e) => e.voice === 'kick');
+      expect(button ? 'button' : 'resolve').toBe(d.expect.ending);
     });
   }
 

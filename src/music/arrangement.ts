@@ -118,7 +118,7 @@ const BLUEPRINTS: Record<string, { label: string; make: Maker; styles: Partial<R
       S('contrast', 'Contrasting section', 2, [0.6, 0.7], 'contrast', 'contrast', 'secondary', 'away', 'contrast', 'drop', 9),
       S('peak', 'Extended improvisation', intBetween(r, 2, 3), [0.75, 0.9], 'busy', 'var', 'both', 'move', 'develop', 'fill', 6, ['perc']),
       S('return', 'Original groove', 2, [0.6, 0.62], 'main', 'main', 'primary', 'home', 'restate', 'none', 9),
-      S('outro', 'Fade', 1, [0.4, 0.12], 'thin', 'main', 'fragment', 'home', 'dissolve', 'none', 8),
+      S('outro', 'Ending', 1, [0.4, 0.12], 'thin', 'main', 'fragment', 'home', 'dissolve', 'none', 8),
     ],
   },
   additive: {

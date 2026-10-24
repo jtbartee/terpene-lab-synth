@@ -40,7 +40,7 @@ Before the first note, `Composer.init()` builds:
    | Berlin-school development | Sequence introduction → Pattern expansion → Harmonic transition → Secondary sequence → Layered peak → Resolution | Berlin |
    | Dub techno journey | Atmosphere → Groove establishment → Chord development → Percussion breakdown → Dub return → Dissolution | Dub, Microhouse |
    | Ambient drift | Sparse introduction → First harmonic field → Texture transformation → New harmonic field → Return of the theme → Gradual dissolution | Ambient, Drone, Kosmische |
-   | Krautrock jam | Primary groove → Motif development → Contrasting section → Extended improvisation → Original groove → Fade | Motorik, Krautpop |
+   | Krautrock jam | Primary groove → Motif development → Contrasting section → Extended improvisation → Original groove → Ending | Motorik, Krautpop |
    | Additive process | Pulse → Additive build → Full process → Subtraction → Return → Outro | Berlin, Motorik, Microhouse |
 
    Lengths, optional sections (a "contrast echo" at high Structure) and the choice itself vary with the seed. Finite arrangements are fitted to the requested length by dropping low-priority sections first.
@@ -128,6 +128,14 @@ At a **phrase start inside a section**, it makes 0–3 decisions (Variation sets
 - **Returns:** a motif that has moved more than `1 + 5 × Motif evolution` steps from its original is brought back. Return sections always use the original groove, bass and motif.
 - **Transitions** at the end of a section are fills, drops (kick and snare silent for the last two beats), builds (a two-beat snare roll) or cuts (a one-beat hole before the next section).
 - **Breakdowns** lose the kick and lower the bass (60 %) and drone (80 %), because held bass notes otherwise carry as much low end as the line they replace (measured on the rendered demos).
+
+### 3.5a Endings (0.2.1)
+
+A finite piece always ends on the home chord, in its last bar, with everything still playing landing together on the downbeat and ringing.
+- **Resolve:** every four bars of the outro, rhythmic layers leave in order (percussion, texture, drums, bass), paced to be gone before the last bar. The melody stays to state the theme at the close, and a pad or drone enters if nothing sustained would carry the final chord.
+- **Button:** the band plays the outro through, a two-beat snare roll sets up the last bar, and kick, bass, chord, drone and melody hit one final chord together.
+
+The choice is seeded from its own stream (so it never shifts other choices): krautrock jams end on a button 60 % of the time, additive forms 40 %, two-part and hypnotic forms 30 %, Berlin development 20 %, ambient and dub forms never. Live playback schedules nothing after the final bar and lets it ring for 3 s before a 1.5 s fade; exports ring for 1.5 s and fade over 2 s inside the 4 s tail.
 
 ### 3.6 Endless pieces
 

@@ -131,6 +131,46 @@ describe('structure', () => {
     expect(['intro', 'main']).toContain(bars[0].section.role);
   });
 
+  it('finite pieces end properly: the last bar comes home to the tonic and everything lands on its downbeat', () => {
+    let resolves = 0, buttons = 0;
+    for (const style of STYLE_IDS) {
+      for (const seed of [3, 14, 15, 92, 65, 35]) {
+        const bars = generateBars({ style, seed, arrangementBars: 64 }, P, 64);
+        const last = bars[63];
+        expect(last.final).toBe(true);
+        expect(last.chord.degree, `${style}/${seed}`).toBe(0);
+        expect(last.events.length, `${style}/${seed} final bar is not empty`).toBeGreaterThan(0);
+        expect(last.events.every((e) => e.beat === 0), `${style}/${seed} one final gesture`).toBe(true);
+        // something sustained carries the final chord
+        expect(last.events.some((e) => (e.voice === 'pad' || e.voice === 'drone') && e.dur >= last.beats - 0.1), `${style}/${seed}`).toBe(true);
+        const drumsAtEnd = last.events.some((e) => e.voice === 'kick');
+        if (drumsAtEnd) {
+          buttons++;
+          // a button ending is set up by a snare roll in the bar before
+          if (bars[62].layers.drums.on) expect(bars[62].events.filter((e) => e.voice === 'snare').length).toBeGreaterThanOrEqual(6);
+        } else {
+          resolves++;
+          // a resolving outro has let the rhythm section go before the last bar
+          expect(last.layers.drums.on && last.layers.bass.on, `${style}/${seed}`).toBe(false);
+        }
+      }
+    }
+    expect(resolves).toBeGreaterThan(0);
+    expect(buttons).toBeGreaterThan(0);
+  });
+
+  it('a resolving outro thins out gradually rather than all at once', () => {
+    const bars = generateBars({ style: 'motorik', seed: 306, arrangementBars: 128, variant: 0 }, P, 128);
+    const outro = bars.filter((b) => b.section.role === 'outro');
+    const count = (b: BarPlan) => Object.values(b.layers).filter((l) => l.on).length;
+    if (outro[outro.length - 1].events.some((e) => e.voice === 'kick')) return; // a button ending
+    for (const b of outro) {
+      const leaving = b.development.filter((d) => d.endsWith('drops out')).length;
+      expect(leaving, `bar ${b.index}`).toBeLessThanOrEqual(2);
+    }
+    expect(count(outro[0])).toBeGreaterThan(count(outro[outro.length - 1]));
+  });
+
   it('the motorik template has kick on 1 and 3, backbeat on 2 and 4, and steady eighth hats', () => {
     const c = new Composer({ style: 'motorik', seed: 1, autonomous: false, rhythmIntensity: 0.6 }, P);
     const bar = c.nextBar();

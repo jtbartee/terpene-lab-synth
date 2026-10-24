@@ -67,7 +67,7 @@ Built-in presets: default; primary only; timbre only (no ◆ routes); gentle (s-
 - ramps 0.05–6 s
 - every send ≤ 1
 
-The master chain is high-pass 28 Hz → compressor (−14 dB, 2.5:1) → limiter (−1 dBFS) → volume. Offline renders get a last-resort trim to −0.3 dBFS. In the 8-bar test renders, peaks measured −5 to −10 dBFS, and the trim did not engage.
+The master chain is −2 dB input trim → high-pass 28 Hz → compressor (−14 dB, 2.5:1) → limiter (−1.5 dBFS, 2 ms attack, 150 ms release) → volume. The limiter's release is deliberately longer than a kick drum's period: Tone.Limiter's default 10 ms release moved the gain inside each 55 Hz kick cycle and crackled (found from owner listening, 0.2.1). Offline renders get a last-resort trim to −0.3 dBFS. In the 8-bar test renders, peaks measured −5 to −10 dBFS, and the trim did not engage.
 
 ## Morphing
 

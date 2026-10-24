@@ -1,8 +1,8 @@
 # Testing and known limitations
 
 ```bash
-npm test            # 132 unit tests (vitest, Node)
-npm run build && npm run e2e   # 71 browser checks (playwright-core + cached Chrome for Testing, port 8757)
+npm test            # 134 unit tests (vitest, Node)
+npm run build && npm run e2e   # 74 browser checks (playwright-core + cached Chrome for Testing, port 8757)
 npm run report:diversity       # regenerates docs/DIVERSITY_REPORT.md (engine 2 vs v0.1)
 npm run build && npm run render:demos   # renders the three listening demos to demos/ and prints section levels
 node tests/e2e/shots.mjs       # screenshots of every view at 1440 and 390 px (tests/e2e/out/shots)
@@ -72,6 +72,7 @@ The suite runs against the **built** app under the GitHub Pages base path, and c
   - MIDI is a valid SMF.
   - The preset contains the profile, seed and mapping; compositions save.
 - **Engine 2:** the listening session lists three demos and the three development knobs; Audition loads the demo (seed, Generative mode, 128 bars) and plays real audio; Now Playing shows the planned form with the current section marked and names the groove, bass and melody; live playback over 17+ bars, across a section change, matches the offline plan event for event; a demo stops from its card; no horizontal scroll at 390 px.
+- A finished piece rings out after its last bar (sound continues, nothing new plays) and the transport then stops by itself.
 - No horizontal scroll at 390 and 820 px; no console errors.
 
 ## Defects found and fixed by testing
@@ -87,6 +88,8 @@ The suite runs against the **built** app under the GitHub Pages base path, and c
 - Engine 2: outros dropped the drone and pad first (the opposite of a dissolve). Outros now keep what is playing and remove one layer per phrase, sustained layers last.
 - Engine 2: breakdowns measured as loud as the main sections in the rendered demo (−21.9 vs −21.5 dBFS), because held bass notes carry more low end than the line they replace. Breakdowns now lower bass and drone; the re-rendered breakdown is −25.6 dBFS.
 - Engine 2: strong-beat chord-tone snapping always tried the note below first, turning rising lines into repeated notes. It now snaps in the direction the line moves.
+- **Owner listening (0.2.1):** speaker crackles on kick hits in all three demos. Measured in the rendered WAVs: every peak reaching the limiter (5, 1 and 14 per piece — "occasional") fell on a beat. Tone.Limiter's 10 ms release is shorter than one 55 Hz kick period, so it distorted the waveform. Fixed with a 150 ms-release limiter and 2 dB more headroom.
+- **Owner listening (0.2.1):** demo A ended in a hard stop. Two causes: live playback scheduled the bar *after* the final bar and cut it 50 ms later, and a 16-bar outro still had the full band in its last bar. Now nothing is scheduled after the final bar, finished pieces ring out (3 s, then a 1.5 s fade), outros resolve on a four-bar schedule or end on a "button", and the last bar always comes home to the tonic.
 - E2E: single 23 ms analyser snapshots could fall between notes (a demo measured 0.0015 at one instant, 0.081 mean over 3 s). Live-level checks now average over 2–3 s.
 
 ## Diversity metrics
