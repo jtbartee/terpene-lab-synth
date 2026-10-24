@@ -155,6 +155,7 @@ export function AboutView() {
           <li>Let a piece run 5+ minutes: sections change at the boundaries shown in Now Playing; it should develop and return, not loop audibly.</li>
           <li>Try each style: they should differ in groove and harmony, not just effects.</li>
           <li>Same style, different seeds (Synth → Listening session): each piece should have its own groove, bass rhythm, melody and form, and a recognisable main idea that returns.</li>
+          <li>Set a 32-bar arrangement and try each Ending: a fade should fall smoothly to silence, a slow-down should ease back without lurching, and every other ending should land on the home chord and ring.</li>
           <li>Push reverb, delay and modulation to maximum: no runaway feedback or distortion.</li>
           <li>Import an exported WAV and stems into Ableton at the stated tempo: stems line up from bar 1.</li>
         </ol>

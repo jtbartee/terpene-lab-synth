@@ -1,7 +1,7 @@
 // The listening demos' descriptions must match what the engine actually plans.
 import { describe, expect, it } from 'vitest';
 import { DEMO_A } from '../../src/chem/demo';
-import { DEMO_SETTINGS, LISTENING_DEMOS } from '../../src/music/demos';
+import { demoSettings, LISTENING_DEMOS, type ListeningDemo } from '../../src/music/demos';
 import { generateBars } from '../../src/music/composer';
 import { brayCurtis, onsetHistogram, DRUM_GROUP } from '../../src/music/analysis';
 import { BUILT_IN_PRESETS, computeControls } from '../../src/sonify/mapping';
@@ -10,13 +10,13 @@ import { getState } from '../../src/store/store';
 
 const variant = profileVariant({ ...getState().synth, profileA: DEMO_A, mode: 'generative', mutedA: [] });
 const params = computeControls(DEMO_A, BUILT_IN_PRESETS[0], 'generative').params;
-const render = (seed: number) => generateBars({ ...DEMO_SETTINGS, seed, variant }, params, 128);
+const render = (d: ListeningDemo) => generateBars({ ...demoSettings(d), variant }, params, 128);
 const base = (s: string) => s.split(' (')[0];
 
 describe('listening demos', () => {
   for (const d of LISTENING_DEMOS) {
     it(`${d.title} plans what its notes describe`, () => {
-      const bars = render(d.seed);
+      const bars = render(d);
       expect(bars[0].blueprint).toBe(d.expect.blueprint);
       expect(bars[0].form.map((f) => f.label).join(' → ')).toBe(d.form);
       const main = bars.find((b) => b.section.role === 'main')!;
@@ -28,13 +28,14 @@ describe('listening demos', () => {
         expect(base(bars[con.index + 2].material.bass)).toBe(d.expect.contrastBass);
       }
       expect(bars[127].final).toBe(true);
-      const button = bars[127].events.some((e) => e.voice === 'kick');
-      expect(button ? 'button' : 'resolve').toBe(d.expect.ending);
+      expect(bars[127].ending).toBe(d.expect.ending);
+      // the ending sounds as described: a button lands with the drums, a resolve without them
+      expect(bars[127].events.some((e) => e.voice === 'kick')).toBe(d.expect.ending === 'button');
     });
   }
 
   it('the three demos are rhythmically different pieces', () => {
-    const ps = LISTENING_DEMOS.map((d) => render(d.seed));
+    const ps = LISTENING_DEMOS.map((d) => render(d));
     for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
       const drums = brayCurtis(onsetHistogram(ps[i], DRUM_GROUP), onsetHistogram(ps[j], DRUM_GROUP));
       const bass = brayCurtis(onsetHistogram(ps[i], ['bass']), onsetHistogram(ps[j], ['bass']));

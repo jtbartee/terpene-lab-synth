@@ -129,13 +129,25 @@ At a **phrase start inside a section**, it makes 0–3 decisions (Variation sets
 - **Transitions** at the end of a section are fills, drops (kick and snare silent for the last two beats), builds (a two-beat snare roll) or cuts (a one-beat hole before the next section).
 - **Breakdowns** lose the kick and lower the bass (60 %) and drone (80 %), because held bass notes otherwise carry as much low end as the line they replace (measured on the rendered demos).
 
-### 3.5a Endings (0.2.1)
+### 3.5a Endings (0.2.1, seven kinds since 0.2.2)
 
-A finite piece always ends on the home chord, in its last bar, with everything still playing landing together on the downbeat and ringing.
-- **Resolve:** every four bars of the outro, rhythmic layers leave in order (percussion, texture, drums, bass), paced to be gone before the last bar. The melody stays to state the theme at the close, and a pad or drone enters if nothing sustained would carry the final chord.
-- **Button:** the band plays the outro through, a two-beat snare roll sets up the last bar, and kick, bass, chord, drone and melody hit one final chord together.
+A finite piece always ends on the home chord in its last bar. Seven endings, each chosen by the seed or picked in **Synth → Ending**:
 
-The choice is seeded from its own stream (so it never shifts other choices): krautrock jams end on a button 60 % of the time, additive forms 40 %, two-part and hypnotic forms 30 %, Berlin development 20 %, ambient and dub forms never. Live playback schedules nothing after the final bar and lets it ring for 3 s before a 1.5 s fade; exports ring for 1.5 s and fade over 2 s inside the 4 s tail.
+| Ending | What happens | How it is built |
+|---|---|---|
+| **Resolve** | The rhythm leaves a layer at a time; melody, pad and drone close on the home chord. | Every four bars of the outro, percussion, texture, drums and bass leave in that order, paced to be gone before the last bar; a pad or drone enters if nothing sustained would carry the chord. |
+| **Final hit** (button) | The band plays to the end; a snare roll sets up one final chord. | Two-beat snare roll in the penultimate bar; kick, open hat, clap, bass, chord, drone and melody land on beat 1. |
+| **Fade-out** | The band keeps playing while the mix fades away. | A post-limiter fader ramps 1 → 0 across the last N/8 bars (6–16), squared so the fall is roughly even in loudness. No final landing. MIDI: CC 7 per beat. |
+| **Slow-down** (ritardando) | The tempo eases back and the band holds a long last chord. | The Transport tempo ramps linearly inside each of the last 4 bars (3 below 32 bars), easing out to 66–78 % of the tempo; the groove's fill leads in; held final chord. MIDI: one tempo event per beat. Export length follows the slower bars. |
+| **Echo-out** | The drums drop away and the last notes repeat as fading dub echoes. | Four bars before the end drums, percussion and texture leave; in the last bar the melody note repeats every dotted eighth (× 0.62 each time) and the bass root every 1.5 beats (× 0.5). |
+| **Cadence** | Two approach chords lead home, sometimes to a major final chord in a minor key. | The last section's chord program ends with two one-bar approach chords: in minor keys iv–v, iv–iv (plagal), ♭VI–♭VII or iv–♭VII; in major keys IV–V, IV–IV, ii–V or vi–V. In minor keys a Picardy third raises the final chord's third 40 % of the time (when the chord has a third). |
+| **Stop-time** | A bar of unison hits with silence between, then one last chord. | The penultimate bar is 3–4 hits (e.g. 1, 2&, 4) of kick, clap, bass root, short chord and a melody climbing through the chord; three plain hits in 3/4. |
+
+**Choosing.** The first draw is the one 0.2.1 made between a button and a resolve (krautrock jams 60 %, additive forms 40 %, two-part and hypnotic 30 %, Berlin development 20 %, ambient and dub forms never), so every piece that ended on a button still does. The rest of the old "resolve" share is divided by weight: resolve 3, fade 1.5, slow-down 1, cadence 1, stop-time 0.7, echo 0.6, adjusted by blueprint (hypnotic and krautrock forms favour the fade, dub journeys the echo, Berlin development the slow-down and cadence, ambient drift the resolve) and style (dub techno favours echo; ambient and drone never use stop-time). Details (which cadence, Picardy, hit figure, how far to slow) come from a separate stream, and choosing a different ending never changes anything before the outro (unit test). Every piece from 0.2.1 is reproduced note for note by choosing Resolve or Final hit (checked against the 0.2.1 build); the three listening demos pin the endings the owner rated (A and B resolve, C final hit).
+
+Measured share over 40 seeds × 8 styles at 128 bars: motorik button 13, fade 9, resolve 7, stop-time 4, echo 4, slow-down 2, cadence 1; dub techno echo 15, resolve 10, fade 6, button 5; drone resolve 24, fade 7, slow-down 6; all seven appear across styles.
+
+Live playback schedules nothing after the final bar and lets it ring for 3 s before a 1.5 s fade; exports ring for 1.5 s and fade over 2 s inside the 4 s tail. Stopping during a fade-out restores the fader, so the next piece is never muted (e2e).
 
 ### 3.6 Endless pieces
 

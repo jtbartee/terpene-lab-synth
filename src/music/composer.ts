@@ -92,9 +92,25 @@ export interface CompositionSettings {
    * mode. Derived from the profile by the store, never edited directly.
    */
   variant?: number;
+  /** How a finite piece ends: 'auto' (or absent) lets the seed and blueprint choose. (Engine 2.2.) */
+  ending?: EndingChoice;
 }
 
 export const ENGINE_VERSION = 2;
+
+/** The ways a finite piece can end. */
+export type EndingKind = 'resolve' | 'button' | 'fade' | 'ritardando' | 'echo' | 'cadence' | 'stopTime';
+export type EndingChoice = 'auto' | EndingKind;
+export const ENDINGS: { id: EndingKind; label: string; text: string }[] = [
+  { id: 'resolve', label: 'Resolve', text: 'The rhythm section leaves a layer at a time; melody, pad and drone close on the home chord.' },
+  { id: 'button', label: 'Final hit', text: 'The band plays to the end, a snare roll sets up the last bar and everyone lands on one chord.' },
+  { id: 'fade', label: 'Fade-out', text: 'The band keeps playing while the whole mix fades away, like the end of a record.' },
+  { id: 'ritardando', label: 'Slow-down', text: 'The tempo eases back over the last bars and the band settles onto a long final chord.' },
+  { id: 'echo', label: 'Echo-out', text: 'The drums drop away and the last notes repeat as fading dub echoes over the home chord.' },
+  { id: 'cadence', label: 'Cadence', text: 'Two approach chords lead home, sometimes to a major final chord in a minor key, and the band holds it.' },
+  { id: 'stopTime', label: 'Stop-time', text: 'The band plays a bar of unison hits with silence between them, then one last chord.' },
+];
+export const endingLabel = (k: EndingKind | 'none') => ENDINGS.find((e) => e.id === k)?.label ?? 'None (endless)';
 
 export const DEFAULT_SETTINGS: CompositionSettings = {
   seed: 20261023, key: 'A', scale: 'natural_minor', bpm: 112, beatsPerBar: 4, style: 'motorik',
@@ -113,6 +129,12 @@ export interface BarPlan {
   index: number;
   beats: number;
   bpm: number;
+  /** a tempo ramp across the bar, ending at this tempo (a slowing ending) */
+  bpmEnd?: number;
+  /** a master fade across the bar, from → to (a fade-out ending) */
+  fade?: [number, number];
+  /** how the piece ends ('none' while endless) */
+  ending: EndingKind | 'none';
   section: SectionInfo;
   phraseBar: number;
   phraseBars: number;
@@ -189,8 +211,10 @@ export class Composer {
   private percRot = 0;
   private dropUntil = -1;
   private forceArticulation = false;
-  /** how a finite piece ends: dissolving to a sustained tonic chord, or the band landing on one final hit */
-  private ending: 'none' | 'resolve' | 'button' = 'none';
+  /** how a finite piece ends (see ENDINGS) */
+  private ending: EndingKind | 'none' = 'none';
+  /** details of the ending, drawn from their own stream so the choice of ending never shifts them */
+  private endingDetail = { cadence: [3, 4] as [number, number], picardy: false, hits: [0, 1.5, 3] as number[], fadeBars: 8, ritBars: 4, ritTo: 0.72 };
   private melodyCache: { key: string; notes: number[] } | null = null;
 
   constructor(settings: Partial<CompositionSettings> = {}, params: ParamSet = neutralParams()) {
@@ -229,6 +253,11 @@ export class Composer {
       this.melodyCache = null;
     }
     if (partial.autonomous === false && prev.autonomous) this.fillLayersStatic();
+    // a new ending applies from the next bar; a cadence re-plans the last section's chords
+    if (partial.ending !== undefined && partial.ending !== prev.ending && this.settings.arrangementBars > 0) {
+      this.chooseEnding();
+      if (this.bar > 0) this.program = this.buildProgram(this.sec);
+    }
   }
 
   setParams(params: ParamSet) { this.params = params; }
@@ -269,9 +298,23 @@ export class Composer {
     else if (this.isPhraseStart(b)) this.develop(b, development);
     if (b === this.dropUntil && !this.layers.drums.on) { this.layers.drums.on = true; this.layers.drums.since = b; development.push('Drums return'); }
     const finalBar = s.arrangementBars > 0 && b === s.arrangementBars - 1;
+    const toGo = s.arrangementBars - b; // bars left, counting this one
     if (sec.role === 'outro' && this.ending === 'resolve' && s.autonomous && (b - sec.start) % 4 === 0 && !finalBar) this.dissolveStep(b, development);
+    if (this.ending === 'echo' && toGo === 4) this.echoStep(b, development);
+    if (this.ending === 'fade' && toGo === this.endingDetail.fadeBars) development.push('The piece begins to fade out');
+    if (this.ending === 'ritardando' && toGo === this.endingDetail.ritBars) development.push('The tempo begins to ease back');
+    if (this.ending === 'stopTime' && toGo === 2) development.push('Stop-time: the band plays unison hits');
 
     this.advanceHarmony(b, development);
+    // a cadence may end a minor-key piece on a major chord (a Picardy third)
+    if (finalBar && this.ending === 'cadence' && this.endingDetail.picardy) {
+      const third = (this.chord.rootPc + 3) % 12;
+      if (this.chord.pcs.includes(third)) {
+        const pcs = this.chord.pcs.map((x) => (x === third ? (x + 1) % 12 : x));
+        this.chord = { ...this.chord, pcs, symbol: chordSymbol(pcs) };
+        development.push(`The final chord turns major: ${this.chord.symbol}`);
+      }
+    }
     const chord = this.chord;
     if (chord.startBar === b || !this.padVoicing) {
       const lo = 50 + Math.round(this.p('upperPads') * 12);
@@ -281,7 +324,8 @@ export class Composer {
     const events: NoteEvent[] = [];
     const L = this.layers;
     const vMul = (l: Layer) => (L[l].fading ? 0.55 : 1) * L[l].level;
-    if (finalBar) this.genEnding(events, vMul);
+    if (finalBar && this.ending !== 'fade') this.genEnding(events, vMul);
+    else if (this.ending === 'stopTime' && toGo === 2) this.genStopTime(events, vMul);
     else {
       if (L.drone.on) this.genDrone(b, events, vMul('drone'));
       if (L.bass.on) this.genBass(b, events, vMul('bass'));
@@ -305,7 +349,10 @@ export class Composer {
     const plan: BarPlan = {
       index: b,
       beats: s.beatsPerBar,
-      bpm: s.bpm,
+      bpm: this.tempoAt(b),
+      ...(this.ending === 'ritardando' && toGo <= this.endingDetail.ritBars ? { bpmEnd: this.tempoAt(b + 1) } : {}),
+      ...(this.ending === 'fade' && toGo <= this.endingDetail.fadeBars ? { fade: [this.fadeAt(b), this.fadeAt(b + 1)] as [number, number] } : {}),
+      ending: this.ending,
       section: { index: sec.index, name: sec.label, role: sec.role, bar: b - sec.start, bars: sec.bars, energy: this.energy, cycle: sec.cycle },
       phraseBar: (b - sec.start) % this.phraseBars,
       phraseBars: this.phraseBars,
@@ -351,8 +398,7 @@ export class Composer {
     this.blueprint = chooseBlueprint(s.style, this.ctl('structure'), r);
     this.percLen = pick(r, [16, 16, 12, 6]);
     this.percRot = intBetween(r, 0, 3);
-    const buttonP: Record<string, number> = { krautJam: 0.6, additive: 0.4, twoPart: 0.3, hypnotic: 0.3, berlinDev: 0.2 };
-    this.ending = s.arrangementBars > 0 ? (chance(stream(this.seed, 'ending', s.style), buttonP[this.blueprint] ?? 0) ? 'button' : 'resolve') : 'none';
+    this.chooseEnding();
     this.buildMemory();
     this.plan = [];
     this.forms = new Map();
@@ -653,8 +699,12 @@ export class Composer {
     const total = this.settings.arrangementBars;
     if (total <= 0 || sec.start + sec.bars < total || sec.bars < 2) return out;
     const last = total - 1 - sec.start;
-    const head = out.filter((c) => c.start < last).map((c) => ({ ...c, bars: Math.min(c.bars, last - c.start) }));
-    return [...head, { degree: this.mem.harmony.center, start: last, bars: 1 }];
+    const center = this.mem.harmony.center;
+    // a cadence ending approaches home through two chords (iv–v, iv–iv, ♭VI–♭VII …), one bar each
+    const approach = this.ending === 'cadence' && last >= 3 ? this.endingDetail.cadence.map((d) => (center + d) % 7) : [];
+    const cut = last - approach.length;
+    const head = out.filter((c) => c.start < cut).map((c) => ({ ...c, bars: Math.min(c.bars, cut - c.start) }));
+    return [...head, ...approach.map((degree, i) => ({ degree, start: cut + i, bars: 1 })), { degree: center, start: last, bars: 1 }];
   }
 
   /** The chord program of a section, built from its harmonic behaviour. */
@@ -907,8 +957,8 @@ export class Composer {
       restate: { inversion: 0.8, filter: 0.6 },
       dissolve: { remove: 4, filterClose: 1 },
     };
-    // a resolving outro dissolves on its own four-bar schedule; a "button" ending keeps the band to the last hit
-    const T = mode === 'dissolve' ? (this.ending === 'button' ? table.restate : { filterClose: 1 }) : table[mode];
+    // a resolving outro dissolves on its own four-bar schedule; every other ending keeps the band to the end
+    const T = mode === 'dissolve' ? (this.ending === 'resolve' || this.ending === 'none' ? { filterClose: 1 } : table.restate) : table[mode];
 
     // ---- rhythm
     if (L.drums.on && m.groove.current) {
@@ -1105,18 +1155,124 @@ export class Composer {
     }
   }
 
+  /**
+   * How this piece ends. The first draw is the one engine 2.1 made between a
+   * "button" and a resolving ending, so a piece that ended on a button still
+   * does; the rest of the old "resolve" share is now split between the newer
+   * endings, weighted by blueprint and style. Details come from their own stream.
+   */
+  private chooseEnding() {
+    const s = this.settings;
+    const N = s.arrangementBars;
+    if (N <= 0) { this.ending = 'none'; return; }
+    const r = stream(this.seed, 'ending', s.style);
+    const buttonP: Record<string, number> = { krautJam: 0.6, additive: 0.4, twoPart: 0.3, hypnotic: 0.3, berlinDev: 0.2 };
+    const button = chance(r, buttonP[this.blueprint] ?? 0);
+    if (s.ending && s.ending !== 'auto') this.ending = s.ending;
+    else if (button) this.ending = 'button';
+    else {
+      const w: Record<Exclude<EndingKind, 'button'>, number> = { resolve: 3, fade: 1.5, ritardando: 1, echo: 0.6, cadence: 1, stopTime: 0.7 };
+      const byBlueprint: Record<string, Partial<typeof w>> = {
+        hypnotic: { fade: 3.5 }, krautJam: { fade: 3, stopTime: 1.5 }, additive: { stopTime: 2, fade: 2 },
+        twoPart: { cadence: 2.5 }, berlinDev: { ritardando: 2.5, cadence: 2 },
+        dubJourney: { echo: 4, fade: 2, cadence: 0.4, stopTime: 0.3 }, ambientDrift: { resolve: 5, ritardando: 2.5, echo: 1, stopTime: 0, cadence: 0.6 },
+      };
+      const byStyle: Partial<Record<StyleId, Partial<typeof w>>> = {
+        dub_techno: { echo: 5 }, microhouse: { stopTime: 1.8, echo: 1.5 }, ambient: { stopTime: 0 }, drone: { stopTime: 0, cadence: 0.4 }, krautpop: { cadence: 2, stopTime: 1.4 },
+      };
+      const ww = { ...w, ...byBlueprint[this.blueprint], ...byStyle[s.style] };
+      this.ending = weighted(r, Object.entries(ww) as [EndingKind, number][]);
+    }
+    // short pieces have no room for a long fade or slow-down
+    if (N < 12 && this.ending !== 'button') this.ending = 'resolve';
+    const d = stream(this.seed, 'endingDetail', this.ending);
+    const minor = scaleIntervals(this.settings.scale).includes(3);
+    const figure = pick(d, [[0, 1.5, 3], [0, 1, 2, 3], [0, 0.75, 1.5, 3], [0, 2.5, 3], [0, 0.5, 1.5, 2.5]]).filter((x) => x < s.beatsPerBar - 0.25);
+    this.endingDetail = {
+      cadence: pick(d, minor ? [[3, 4], [3, 3], [5, 6], [3, 6]] : [[3, 4], [3, 3], [1, 4], [5, 4]]) as [number, number],
+      picardy: minor && chance(d, 0.4),
+      hits: figure.length >= 3 ? figure : [0, 1, 2], // a short bar (3/4) gets three plain hits
+      fadeBars: Math.max(6, Math.min(16, Math.round(N / 8))),
+      ritBars: N >= 32 ? 4 : 3,
+      ritTo: 0.66 + 0.12 * d(),
+    };
+  }
+
+  /** Tempo at the start of bar b: steady, except across a slowing ending. */
+  private tempoAt(b: number): number {
+    const s = this.settings;
+    if (this.ending !== 'ritardando') return s.bpm;
+    const { ritBars, ritTo } = this.endingDetail;
+    const into = b - (s.arrangementBars - ritBars);
+    if (into <= 0) return s.bpm;
+    const x = Math.min(1, into / ritBars);
+    return Math.round(s.bpm * (1 - (1 - ritTo) * x * (2 - x)) * 100) / 100; // eases out: slows fastest at first
+  }
+
+  /** Master gain at the start of bar b during a fade-out: 1 → 0 by the end of the last bar. */
+  private fadeAt(b: number): number {
+    const toGo = this.settings.arrangementBars - b;
+    const x = Math.max(0, Math.min(1, toGo / this.endingDetail.fadeBars));
+    return Math.round(x * x * 1000) / 1000; // squared: roughly even in loudness
+  }
+
+  /** Four bars before the end of an echo-out: the rhythm leaves and the pitched parts carry on alone. */
+  private echoStep(b: number, dev: string[]) {
+    dev.push('The rhythm drops away — echoes carry the end');
+    for (const l of ['drums', 'perc', 'texture'] as Layer[]) this.changeLayer({ layer: l, on: false }, b, dev);
+    const L = this.layers;
+    const sustained = (['pad', 'drone'] as Layer[]).filter((l) => this.affinity(l) > 0.05);
+    if (!sustained.some((l) => L[l].on && !L[l].fading) && sustained.length) {
+      this.turnOn(sustained[0], b);
+      dev.push(`${this.cap(sustained[0])} enters to carry the final chord`);
+    }
+  }
+
+  /** The bar before a stop-time ending: unison hits on the ending's figure, silence between. */
+  private genStopTime(ev: NoteEvent[], vMul: (l: Layer) => number) {
+    const L = this.layers;
+    const c = this.chord;
+    const on = (l: Layer) => L[l].on;
+    const hits = this.endingDetail.hits;
+    const pool = this.mem.melody.current?.kind === 'arp' ? this.arpPool(this.mem.melody.current) : null;
+    hits.forEach((beat, i) => {
+      const acc = i === 0 || i === hits.length - 1;
+      if (on('drums')) {
+        ev.push({ voice: 'kick', beat, dur: 0.3, notes: [], vel: (acc ? 0.9 : 0.78) * vMul('drums'), accent: acc });
+        ev.push({ voice: 'clap', beat, dur: 0.2, notes: [], vel: 0.5 * vMul('drums') });
+      }
+      if (on('bass')) ev.push({ voice: 'bass', beat, dur: 0.35, notes: [this.bassRoot(c.rootPc)], vel: 0.82 * vMul('bass'), accent: acc });
+      if (on('pad') && this.padVoicing) ev.push({ voice: 'pad', beat, dur: 0.4, notes: this.padVoicing, vel: 0.55 * vMul('pad') });
+      if (on('arp') && this.mem.melody.current) {
+        // the melody climbs through the chord, one tone per hit
+        const tones = pool ? pool.filter((x) => c.pcs.includes(x % 12)) : [];
+        const note = tones.length ? tones[Math.min(tones.length - 1, i)] : this.melodyPitch(this.mem.melody.current, 2 * i, true, 1);
+        ev.push({ voice: 'arp', beat, dur: 0.3, notes: [note], vel: 0.68 * vMul('arp'), accent: acc });
+      }
+    });
+    if (on('drone')) { const root = this.bassRoot(this.tonicPc()); ev.push({ voice: 'drone', beat: 0, dur: this.settings.beatsPerBar, notes: [this.snapToScale(root + 12)], vel: 0.4 * vMul('drone') }); }
+  }
+
   /** The last bar of a finite piece: everything still playing lands together on the tonic and rings. */
   private genEnding(ev: NoteEvent[], vMul: (l: Layer) => number) {
     const L = this.layers;
     const beats = this.settings.beatsPerBar;
     const c = this.chord;
     const on = (l: Layer) => L[l].on && !L[l].fading;
+    const k = this.ending;
+    // the band's last chord is held a little longer when the ending is a held one
+    const hold = k === 'ritardando' || k === 'cadence' ? 1 : 0.95;
+    const echo = k === 'echo';
     if (on('drums')) {
       ev.push({ voice: 'kick', beat: 0, dur: 0.5, notes: [], vel: 0.9 * vMul('drums'), accent: true });
       ev.push({ voice: 'hatO', beat: 0, dur: 1.2, notes: [], vel: 0.5 * vMul('drums') });
-      if (this.ending === 'button') ev.push({ voice: 'clap', beat: 0, dur: 0.2, notes: [], vel: 0.6 * vMul('drums') });
+      if (k === 'button' || k === 'stopTime') ev.push({ voice: 'clap', beat: 0, dur: 0.2, notes: [], vel: 0.6 * vMul('drums') });
     }
-    if (on('bass')) ev.push({ voice: 'bass', beat: 0, dur: beats * 0.95, notes: [this.bassRoot(c.rootPc)], vel: 0.85 * vMul('bass'), accent: true });
+    if (on('bass')) {
+      const root = this.bassRoot(c.rootPc);
+      if (echo) this.echoes(ev, 'bass', root, 0.85 * vMul('bass'), 1.5, 0.5, 1.2, beats);
+      else ev.push({ voice: 'bass', beat: 0, dur: beats * hold, notes: [root], vel: 0.85 * vMul('bass'), accent: true });
+    }
     if (on('drone')) {
       const root = this.bassRoot(this.tonicPc());
       ev.push({ voice: 'drone', beat: 0, dur: beats, notes: [...new Set(this.style.droneIntervals.map((i) => this.snapToScale(root + i)))], vel: 0.7 * vMul('drone') });
@@ -1126,9 +1282,17 @@ export class Composer {
     if (on('arp') && m) {
       // the melody's last word: the tonic (or the chord root) in its own register
       const note = m.kind === 'arp' ? this.arpPool(m).find((x) => x % 12 === c.rootPc) ?? this.arpPool(m)[0] : this.melodyPitch(m, 0, true, -1);
-      ev.push({ voice: 'arp', beat: 0, dur: beats * 0.9, notes: [note], vel: 0.7 * vMul('arp'), accent: true });
+      if (echo) this.echoes(ev, 'arp', note, 0.72 * vMul('arp'), 0.75, 0.62, 0.4, beats);
+      else ev.push({ voice: 'arp', beat: 0, dur: beats * (hold === 1 ? 1 : 0.9), notes: [note], vel: 0.7 * vMul('arp'), accent: true });
     }
     if (on('texture')) ev.push({ voice: 'shimmer', beat: 0, dur: beats, notes: c.pcs.slice(0, 2).map((pc) => 84 + pc), vel: 0.3 * vMul('texture') });
+  }
+
+  /** A dub echo written out as notes: the same note repeating every `gap` beats, each `decay` times quieter. */
+  private echoes(ev: NoteEvent[], voice: Voice, note: number, vel: number, gap: number, decay: number, dur: number, beats: number) {
+    for (let i = 0, at = 0, v = vel; at < beats - 0.1 && v > 0.06; i++, at += gap, v *= decay) {
+      ev.push({ voice, beat: at, dur: Math.min(dur, beats - at), notes: [note], vel: v, accent: i === 0 });
+    }
   }
 
   // ------------------------------------------------------------ generators
@@ -1312,6 +1476,9 @@ export class Composer {
     const noKick = building || sec.role === 'breakdown';
     const sectionEnd = this.isSectionEnd(b) && s.autonomous;
     const intoButton = this.ending === 'button' && b === s.arrangementBars - 2;
+    // cadence, slow-down and stop-time endings are announced by the groove's own fill
+    const intoEnding = (this.ending === 'cadence' || this.ending === 'ritardando') && b === s.arrangementBars - 2
+      || this.ending === 'stopTime' && b === s.arrangementBars - 3;
     const phraseEnd = (rel + 1) % this.phraseBars === 0;
     let fill: FillKind = 'none';
     let fillFrom = n - 4;
@@ -1320,6 +1487,7 @@ export class Composer {
       else if (sec.transition === 'build') { fill = 'snareRoll'; fillFrom = Math.max(0, n - 8); }
       else if (sec.transition === 'drop') { fill = 'kickDrop'; fillFrom = Math.max(0, n - 8); }
     } else if (intoButton) { fill = 'snareRoll'; fillFrom = Math.max(0, n - 8); }
+    else if (intoEnding) fill = gr.fill === 'none' ? 'openHat' : gr.fill;
     else if (phraseEnd && sec.dev !== 'restate' && sec.dev !== 'dissolve' && chance(r, 0.12 + 0.3 * s.variation)) fill = gr.fill;
     const replaced: Record<FillKind, DrumVoice[]> = {
       none: [], snareRoll: ['snare', 'clap', 'hatC'], openHat: [], kickDrop: ['kick', 'snare', 'clap'], stutter: ['hatC'], tom: ['snare', 'clap'], clapFlam: ['clap'],
@@ -1405,3 +1573,6 @@ export function generateBars(settings: Partial<CompositionSettings>, params: Par
 }
 
 export const barSeconds = (bpm: number, beats: number) => (60 / bpm) * beats;
+
+/** Length of one planned bar, including a linear tempo ramp across it (a slowing ending). */
+export const planSeconds = (p: Pick<BarPlan, 'beats' | 'bpm' | 'bpmEnd'>) => (120 * p.beats) / (p.bpm + (p.bpmEnd ?? p.bpm));

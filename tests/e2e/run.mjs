@@ -309,7 +309,7 @@ try {
     const cells = await page.$$eval('.form-cell', (els) => els.map((e) => [e.textContent, e.classList.contains('now')]));
     check('Now Playing shows the planned form with the current section marked', cells.length >= 5 && cells.filter((c) => c[1]).length === 1, cells.map((c) => `${c[0]}${c[1] ? '*' : ''}`).join(' > '));
     const mat = await page.$$eval('.material dd', (els) => els.map((e) => e.textContent));
-    check('Now Playing names the groove, bass and melody in use', mat.length === 3 && mat.every((x) => x && x.length > 3), mat.join(' | '));
+    check('Now Playing names the groove, bass, melody and ending in use', mat.length === 4 && mat.every((x) => x && x.length > 3) && mat[3] === 'Resolve', mat.join(' | '));
     const live = await S(() => window.__tls.getState().transport.history.map((b) => JSON.stringify([b.index, b.section.name, b.material, b.chord.symbol, b.events])));
     const offline = await S(async (n) => (await window.__tls.plan(n)).map((b) => JSON.stringify([b.index, b.section.name, b.material, b.chord.symbol, b.events])), (live.length ? JSON.parse(live[live.length - 1])[0] + 1 : 0));
     const same = live.length > 0 && live.every((x) => offline.includes(x));
@@ -319,7 +319,7 @@ try {
     await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped');
     check('a demo stops cleanly from its card', true);
     // a finished piece rings out: no bar after the last, sound continues briefly, then the transport stops
-    await S(() => window.__tls.setSettings({ arrangementBars: 32, bpm: 180, style: 'motorik', autonomous: true }));
+    await S(() => window.__tls.setSettings({ arrangementBars: 32, bpm: 180, style: 'motorik', autonomous: true, ending: 'resolve' }));
     await page.click('.transport button[aria-label="Play"]');
     await page.waitForFunction(() => window.__tls.getState().transport.bar?.index === 31, null, { timeout: 90000 });
     const barSec = 4 * 60 / 180;
@@ -333,6 +333,37 @@ try {
     check('nothing plays after the final bar', lastIdx === 31, `last bar shown ${lastIdx + 1}`);
     await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped', null, { timeout: 10000 });
     check('the transport stops by itself after the ring-out', true);
+
+    // the Ending menu: every ending, off while endless
+    const opts = await page.$$eval('#ending-select option', (els) => els.map((e) => e.value));
+    check('the Ending menu offers Auto and seven endings', opts.length === 8 && opts[0] === 'auto', opts.join(', '));
+    await S(() => window.__tls.setSettings({ arrangementBars: 0 }));
+    check('the Ending menu is disabled for an endless piece', await page.$eval('#ending-select', (e) => e.disabled));
+    // a slow-down really slows the live transport; a fade-out really fades the live mix
+    await S(() => window.__tls.setSettings({ arrangementBars: 16, bpm: 180, ending: 'ritardando' }));
+    await page.selectOption('#ending-select', 'ritardando');
+    await page.click('.transport button[aria-label="Play"]');
+    await page.waitForFunction(() => window.__tls.getState().transport.bar?.index === 15, null, { timeout: 60000 });
+    await sleep(600);
+    const slowed = await S(() => window.__tls.tempo());
+    check('a slow-down ending ramps the live tempo down', slowed < 150 && slowed > 110, `${slowed.toFixed(1)} BPM in the last bar (from 180)`);
+    await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped', null, { timeout: 15000 });
+    await S(() => window.__tls.setSettings({ ending: 'fade' }));
+    await page.click('.transport button[aria-label="Play"]');
+    const level = async () => { const xs = []; for (let i = 0; i < 10; i++) { xs.push(await S(() => window.__tls.liveRms()) ?? 0); await sleep(80); } return xs.reduce((a, b) => a + b, 0) / xs.length; };
+    await page.waitForFunction(() => window.__tls.getState().transport.bar?.index === 9, null, { timeout: 60000 });
+    const before = await level();
+    await page.waitForFunction(() => window.__tls.getState().transport.bar?.index === 15, null, { timeout: 60000 });
+    await sleep(300);
+    const during = await level();
+    check('a fade-out ending fades the live mix', during < before * 0.4 && before > 0.003, `RMS ${before.toFixed(4)} at bar 10 → ${during.toFixed(4)} in the last bar`);
+    await page.waitForFunction(() => window.__tls.getState().transport.state === 'stopped', null, { timeout: 15000 });
+    await S(() => window.__tls.setSettings({ ending: 'auto', arrangementBars: 0 }));
+    await page.click('.transport button[aria-label="Play"]');
+    await sleep(2500);
+    const after = await level();
+    check('after a fade-out the next piece plays at full level', after > 0.003, `RMS ${after.toFixed(4)}`);
+    await page.click('.transport button[aria-label="Stop"]');
 
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto(BASE + '#/synth');

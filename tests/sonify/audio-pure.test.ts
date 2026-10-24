@@ -164,6 +164,23 @@ describe('export encoders', () => {
     for (const t of midi.tracks) for (const n of t.notes) { expect(n.durationTicks).toBeGreaterThan(0); expect(n.velocity).toBeGreaterThan(0); }
   });
 
+  it('MIDI export writes a slowing ending as tempo changes and a fade-out as channel volume', () => {
+    const base = { ...DEFAULT_SETTINGS, seed: 14, bpm: 120, arrangementBars: 32 };
+    const rit = new Midi(midiBytes(generateBars({ ...base, ending: 'ritardando' }, neutralParams(), 32), { ...base, ending: 'ritardando' }));
+    const tempos = rit.header.tempos.map((t) => t.bpm);
+    expect(tempos[0]).toBe(120);
+    expect(tempos.length).toBeGreaterThan(8);
+    for (let i = 2; i < tempos.length; i++) expect(tempos[i]).toBeLessThan(tempos[i - 1]);
+    expect(rit.header.tempos[1].ticks).toBeGreaterThanOrEqual(28 * 4 * rit.header.ppq);
+    const fade = new Midi(midiBytes(generateBars({ ...base, ending: 'fade' }, neutralParams(), 32), { ...base, ending: 'fade' }));
+    const bass = fade.tracks.find((t) => t.name.startsWith('Bass'))!;
+    const cc = bass.controlChanges[7] ?? [];
+    expect(cc.length).toBeGreaterThan(8);
+    expect(cc[0].value).toBeCloseTo(1, 2);
+    expect(cc[cc.length - 1].value).toBeLessThan(0.05);
+    expect(fade.header.tempos.length).toBe(1);
+  });
+
   it('key signatures follow the MIDI spec', () => {
     expect(keySignatureBytes('A', 'natural_minor')).toEqual({ sf: 0, mi: 1 });
     expect(keySignatureBytes('C#', 'natural_minor')).toEqual({ sf: 4, mi: 1 }); // E major's 4 sharps

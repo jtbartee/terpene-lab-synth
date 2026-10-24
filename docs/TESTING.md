@@ -1,8 +1,8 @@
 # Testing and known limitations
 
 ```bash
-npm test            # 134 unit tests (vitest, Node)
-npm run build && npm run e2e   # 74 browser checks (playwright-core + cached Chrome for Testing, port 8757)
+npm test            # 146 unit tests (vitest, Node)
+npm run build && npm run e2e   # 79 browser checks (playwright-core + cached Chrome for Testing, port 8757)
 npm run report:diversity       # regenerates docs/DIVERSITY_REPORT.md (engine 2 vs v0.1)
 npm run build && npm run render:demos   # renders the three listening demos to demos/ and prints section levels
 node tests/e2e/shots.mjs       # screenshots of every view at 1440 and 390 px (tests/e2e/out/shots)
@@ -90,6 +90,7 @@ The suite runs against the **built** app under the GitHub Pages base path, and c
 - Engine 2: strong-beat chord-tone snapping always tried the note below first, turning rising lines into repeated notes. It now snaps in the direction the line moves.
 - **Owner listening (0.2.1):** speaker crackles on kick hits in all three demos. Measured in the rendered WAVs: every peak reaching the limiter (5, 1 and 14 per piece — "occasional") fell on a beat. Tone.Limiter's 10 ms release is shorter than one 55 Hz kick period, so it distorted the waveform. Fixed with a 150 ms-release limiter and 2 dB more headroom.
 - **Owner listening (0.2.1):** demo A ended in a hard stop. Two causes: live playback scheduled the bar *after* the final bar and cut it 50 ms later, and a 16-bar outro still had the full band in its last bar. Now nothing is scheduled after the final bar, finished pieces ring out (3 s, then a 1.5 s fade), outros resolve on a four-bar schedule or end on a "button", and the last bar always comes home to the tonic.
+- **Owner request (0.2.2):** more than two endings. Each new ending has a unit test of what it does (fade monotonic to 0, tempo ramp continuous and 66–78 % at the end, echoes repeat the same note quieter each time, approach chords before the tonic, stop-time hits short with silent gaps), all fit 3/5/7 metres, and choosing an ending leaves the piece before the outro untouched. E2E checks the live tempo really slows (180 → 141 BPM in the last bar of a 16-bar piece) and the live mix really fades (RMS 0.101 → 0.002), and that the next piece after a fade plays at full level. Offline renders of all seven at 32 bars peaked at −5.8 to −7.1 dBFS with no trim. Scopes now read after the fade fader.
 - E2E: single 23 ms analyser snapshots could fall between notes (a demo measured 0.0015 at one instant, 0.081 mean over 3 s). Live-level checks now average over 2–3 s.
 
 ## Diversity metrics

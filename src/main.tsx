@@ -27,6 +27,8 @@ import { composerSettings, currentParams, getLivePlayer } from './store/actions'
     const s = getState().synth;
     return generateBars(composerSettings(s), currentParams(s), n);
   },
+  /** the live Transport tempo (a slowing ending ramps it) */
+  tempo: async () => (await import('tone')).getTransport().bpm.value,
   liveRms: () => {
     const w = getLivePlayer()?.analysers().waveform;
     if (!w) return null;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DEMO_A, DEMO_B } from '../../src/chem/demo';
-import { Composer, PITCHED_VOICES, generateBars, type BarPlan, type CompositionSettings } from '../../src/music/composer';
+import { Composer, ENDINGS, PITCHED_VOICES, generateBars, planSeconds, type BarPlan, type CompositionSettings, type EndingKind } from '../../src/music/composer';
 import { STYLE_IDS } from '../../src/music/styles';
 import { SCALES, inScale, keyPc } from '../../src/music/theory';
 import { BUILT_IN_PRESETS, computeControls } from '../../src/sonify/mapping';
@@ -131,39 +131,156 @@ describe('structure', () => {
     expect(['intro', 'main']).toContain(bars[0].section.role);
   });
 
-  it('finite pieces end properly: the last bar comes home to the tonic and everything lands on its downbeat', () => {
-    let resolves = 0, buttons = 0;
+  it('finite pieces end properly: the last bar comes home to the tonic, and the seed chooses among all the endings', () => {
+    const seen = new Set<string>();
     for (const style of STYLE_IDS) {
-      for (const seed of [3, 14, 15, 92, 65, 35]) {
+      for (const seed of [3, 14, 15, 92, 65, 35, 7, 21]) {
         const bars = generateBars({ style, seed, arrangementBars: 64 }, P, 64);
         const last = bars[63];
+        const id = `${style}/${seed} (${last.ending})`;
+        seen.add(last.ending);
         expect(last.final).toBe(true);
-        expect(last.chord.degree, `${style}/${seed}`).toBe(0);
-        expect(last.events.length, `${style}/${seed} final bar is not empty`).toBeGreaterThan(0);
-        expect(last.events.every((e) => e.beat === 0), `${style}/${seed} one final gesture`).toBe(true);
+        expect(last.chord.degree, id).toBe(0);
+        expect(last.events.length, `${id} final bar is not empty`).toBeGreaterThan(0);
+        if (last.ending === 'fade') continue; // a fade keeps playing until it is silent
+        // one final gesture on the downbeat (an echo-out repeats it, quieter each time)
+        const at0 = last.events.filter((e) => e.beat === 0);
+        expect(at0.length, id).toBeGreaterThan(0);
+        if (last.ending !== 'echo') expect(last.events.every((e) => e.beat === 0), `${id} one final gesture`).toBe(true);
         // something sustained carries the final chord
-        expect(last.events.some((e) => (e.voice === 'pad' || e.voice === 'drone') && e.dur >= last.beats - 0.1), `${style}/${seed}`).toBe(true);
-        const drumsAtEnd = last.events.some((e) => e.voice === 'kick');
-        if (drumsAtEnd) {
-          buttons++;
-          // a button ending is set up by a snare roll in the bar before
-          if (bars[62].layers.drums.on) expect(bars[62].events.filter((e) => e.voice === 'snare').length).toBeGreaterThanOrEqual(6);
-        } else {
-          resolves++;
-          // a resolving outro has let the rhythm section go before the last bar
-          expect(last.layers.drums.on && last.layers.bass.on, `${style}/${seed}`).toBe(false);
-        }
+        expect(last.events.some((e) => (e.voice === 'pad' || e.voice === 'drone') && e.dur >= last.beats - 0.1), id).toBe(true);
       }
     }
-    expect(resolves).toBeGreaterThan(0);
-    expect(buttons).toBeGreaterThan(0);
+    expect([...seen].sort()).toEqual(['button', 'cadence', 'echo', 'fade', 'resolve', 'ritardando', 'stopTime']);
+  });
+
+  describe('each ending does what it says', () => {
+    const N = 64;
+    const piece = (ending: EndingKind, style: CompositionSettings['style'] = 'motorik', seed = 14) => generateBars({ style, seed, arrangementBars: N, ending }, P, N);
+    const tail = (bars: BarPlan[], k: number) => bars.slice(N - k);
+
+    it('an explicit ending overrides the seed, and an endless piece has none', () => {
+      for (const k of ENDINGS.map((e) => e.id)) expect(piece(k)[N - 1].ending).toBe(k);
+      expect(generateBars({ style: 'motorik', seed: 14, arrangementBars: 0, ending: 'fade' }, P, 4)[0].ending).toBe('none');
+    });
+
+    it('choosing an ending leaves everything before the outro untouched', () => {
+      const a = piece('resolve');
+      const outro = a.findIndex((b) => b.section.role === 'outro');
+      for (const k of ENDINGS.map((e) => e.id)) {
+        const b = piece(k);
+        for (let i = 0; i < outro; i++) expect(b[i].events, `${k} bar ${i}`).toEqual(a[i].events);
+      }
+    });
+
+    it('every ending fits odd metres: nothing spills past the bar, and the last chord is the tonic', () => {
+      for (const beatsPerBar of [3, 5, 7] as const) for (const k of ENDINGS.map((e) => e.id)) {
+        const bars = generateBars({ style: 'motorik', seed: 14, arrangementBars: N, ending: k, beatsPerBar }, P, N);
+        for (const b of tail(bars, 6)) for (const e of b.events) expect(e.beat, `${beatsPerBar}/4 ${k} bar ${b.index}`).toBeLessThan(beatsPerBar);
+        expect(bars[N - 1].chord.degree).toBe(0);
+        if (k === 'stopTime') expect(new Set(bars[N - 2].events.map((e) => e.beat)).size).toBeGreaterThanOrEqual(3);
+      }
+    });
+
+    it('resolve: the rhythm section has gone before the last chord', () => {
+      for (const style of STYLE_IDS) { const last = piece('resolve', style)[N - 1]; expect(last.layers.drums.on && last.layers.bass.on, style).toBe(false); }
+    });
+
+    it('final hit: a snare roll sets up one chord with the drums', () => {
+      const bars = piece('button');
+      expect(bars[N - 2].events.filter((e) => e.voice === 'snare').length).toBeGreaterThanOrEqual(6);
+      expect(bars[N - 1].events.some((e) => e.voice === 'kick' && e.beat === 0)).toBe(true);
+    });
+
+    it('fade-out: the master fades smoothly from full to silence over the last bars while the band plays on', () => {
+      const bars = piece('fade');
+      const fading = bars.filter((b) => b.fade);
+      expect(fading.length).toBeGreaterThanOrEqual(4);
+      expect(fading[0].fade![0]).toBe(1);
+      expect(fading[fading.length - 1].fade![1]).toBe(0);
+      expect(fading[fading.length - 1].index).toBe(N - 1);
+      for (let i = 0; i < fading.length; i++) {
+        expect(fading[i].fade![1]).toBeLessThan(fading[i].fade![0]);
+        if (i) expect(fading[i].fade![0]).toBe(fading[i - 1].fade![1]);
+      }
+      expect(bars[N - 1].events.some((e) => e.beat > 0)).toBe(true);
+    });
+
+    it('slow-down: the tempo eases back continuously, then the band holds the last chord', () => {
+      const bars = piece('ritardando');
+      const slowing = bars.filter((b) => b.bpmEnd != null);
+      expect(slowing.length).toBeGreaterThanOrEqual(3);
+      expect(bars[N - slowing.length - 1].bpm).toBe(112);
+      for (let i = 0; i < slowing.length; i++) {
+        expect(slowing[i].bpmEnd!).toBeLessThan(slowing[i].bpm);
+        if (i) expect(slowing[i].bpm).toBe(slowing[i - 1].bpmEnd);
+      }
+      const end = slowing[slowing.length - 1].bpmEnd! / 112;
+      expect(end).toBeGreaterThan(0.6);
+      expect(end).toBeLessThan(0.8);
+      expect(planSeconds(bars[N - 1])).toBeGreaterThan(planSeconds(bars[0]));
+    });
+
+    it('echo-out: the drums leave and the last notes repeat, each quieter than the one before', () => {
+      for (const style of ['dub_techno', 'motorik', 'microhouse'] as const) {
+        const bars = piece('echo', style);
+        for (const b of tail(bars, 3)) expect(b.events.some((e) => e.voice === 'kick' || e.voice === 'snare' || e.voice === 'hatC'), `${style} bar ${b.index}`).toBe(false);
+        const last = bars[N - 1];
+        const trails = (['arp', 'bass'] as const).map((v) => last.events.filter((e) => e.voice === v)).filter((t) => t.length > 1);
+        expect(trails.length, style).toBeGreaterThan(0);
+        for (const t of trails) for (let i = 1; i < t.length; i++) {
+          expect(t[i].notes).toEqual(t[0].notes);
+          expect(t[i].vel).toBeLessThan(t[i - 1].vel);
+        }
+      }
+    });
+
+    it('cadence: two approach chords lead to the tonic', () => {
+      for (const seed of [14, 3, 92, 65]) {
+        const bars = piece('cadence', 'motorik', seed);
+        const [a, b, c] = tail(bars, 3).map((x) => x.chord);
+        expect(c.degree).toBe(0);
+        expect(a.degree, `seed ${seed}`).not.toBe(0);
+        expect(b.degree, `seed ${seed}`).not.toBe(0);
+      }
+    });
+
+    it('cadence: a Picardy third sometimes makes the final chord major in a minor key', () => {
+      let picardy = 0, minorEnd = 0;
+      for (let seed = 1; seed <= 40; seed++) {
+        const last = piece('cadence', 'kosmische', seed)[N - 1];
+        const root = last.chord.rootPc;
+        if (last.chord.pcs.includes((root + 3) % 12)) minorEnd++;
+        if (last.development.some((d) => d.includes('turns major'))) {
+          picardy++;
+          expect(last.chord.pcs.includes((root + 4) % 12)).toBe(true);
+          expect(last.chord.pcs.includes((root + 3) % 12)).toBe(false);
+          for (const e of last.events) if (e.voice === 'pad') expect(e.notes.some((n) => n % 12 === (root + 4) % 12)).toBe(true);
+        }
+      }
+      expect(picardy).toBeGreaterThan(0);
+      expect(minorEnd).toBeGreaterThan(0);
+    });
+
+    it('stop-time: a bar of unison hits with silence between them, then one last chord', () => {
+      for (const seed of [14, 3, 92, 65, 35]) {
+        const bars = piece('stopTime', 'krautpop', seed);
+        const stop = bars[N - 2];
+        const hits = [...new Set(stop.events.filter((e) => e.voice !== 'drone').map((e) => e.beat))].sort((x, y) => x - y);
+        expect(hits.length, `seed ${seed}`).toBeGreaterThanOrEqual(3);
+        expect(hits[0]).toBe(0);
+        // everything on a hit is short, so the gaps are silent
+        for (const e of stop.events) if (e.voice !== 'drone') expect(e.dur).toBeLessThanOrEqual(0.4);
+        if (stop.layers.drums.on) expect(stop.events.filter((e) => e.voice === 'kick').length).toBe(hits.length);
+        expect(bars[N - 1].events.every((e) => e.beat === 0)).toBe(true);
+      }
+    });
   });
 
   it('a resolving outro thins out gradually rather than all at once', () => {
-    const bars = generateBars({ style: 'motorik', seed: 306, arrangementBars: 128, variant: 0 }, P, 128);
+    const bars = generateBars({ style: 'motorik', seed: 306, arrangementBars: 128, variant: 0, ending: 'resolve' }, P, 128);
     const outro = bars.filter((b) => b.section.role === 'outro');
     const count = (b: BarPlan) => Object.values(b.layers).filter((l) => l.on).length;
-    if (outro[outro.length - 1].events.some((e) => e.voice === 'kick')) return; // a button ending
     for (const b of outro) {
       const leaving = b.development.filter((d) => d.endsWith('drops out')).length;
       expect(leaving, `bar ${b.index}`).toBeLessThanOrEqual(2);

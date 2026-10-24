@@ -22,6 +22,10 @@
 - Kick crackle: a slow-release limiter and 2 dB more headroom (cause measured in the rendered demos).
 - Proper endings: resolving or "button" endings on the tonic, a ring-out instead of a cut, nothing scheduled after the final bar.
 
+## Done (v0.2.2, 2026-10-23) — from the owner's second listening notes
+
+- Five more endings (fade-out, slow-down, echo-out, cadence, stop-time) beside resolve and final hit; an **Ending** menu (Auto or any of the seven); Now Playing names the ending; MIDI carries the slow-down as tempo changes and the fade as CC 7.
+
 ## Next
 
 - **Owner listening pass of engine 2** (Synth → Listening session) and tuning of archetype weights, section lengths and thresholds from it.

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { morphProfiles } from '../../chem/profile';
 import { DEFAULT_MIXER, MIX_KEYS, type MixKey } from '../../audio/params';
-import { BUSES, type Bus } from '../../music/composer';
+import { BUSES, ENDINGS, type Bus, type EndingChoice } from '../../music/composer';
 import { STYLES, STYLE_IDS, type StyleId } from '../../music/styles';
 import { KEYS, SCALES, type KeyName, type ScaleId } from '../../music/theory';
 import { computeControls, explainControls } from '../../sonify/mapping';
@@ -121,9 +121,16 @@ export function SynthView() {
                   {[32, 64, 128, 256].map((b) => <option key={b} value={b}>{b} bars</option>)}
                 </select>
               </label>
+              <label className="field"><span className="label">Ending</span>
+                <select id="ending-select" className="select" value={s.ending ?? 'auto'} disabled={s.arrangementBars === 0} title={s.arrangementBars === 0 ? 'An endless piece never ends: choose an arrangement length first' : ENDINGS.find((x) => x.id === s.ending)?.text ?? 'The seed and the form choose the ending'} onChange={(e) => setSettings({ ending: e.target.value as EndingChoice })}>
+                  <option value="auto">Auto (the piece chooses)</option>
+                  {ENDINGS.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+                </select>
+              </label>
               <label className="check" style={{ alignSelf: 'end', minHeight: 36 }}><input type="checkbox" checked={s.autonomous} onChange={(e) => setSettings({ autonomous: e.target.checked })} /> Autonomous evolution</label>
             </div>
             {SCALES.find((x) => x.id === s.scale)?.note && <p className="tiny faint" style={{ margin: 0 }}>{SCALES.find((x) => x.id === s.scale)!.note}</p>}
+            {s.arrangementBars > 0 && <p className="tiny faint" style={{ margin: 0 }}>Ending: {ENDINGS.find((x) => x.id === s.ending)?.text ?? 'chosen by the seed and the form — resolve, final hit, fade-out, slow-down, echo-out, cadence or stop-time.'}</p>}
             <p className="small muted" style={{ margin: 0 }}>{style.blurb} <span className="faint">Research references: {style.influences}.</span></p>
             <div className="knob-row" aria-label="Composition controls">
               <Knob label="Complexity" value={s.complexity} onChange={(v) => setSettings({ complexity: v })} defaultValue={0.5} format={pct} controlId="complexity" title="Detail inside the patterns: ghost notes, sixteenths, motif length, arpeggio span" />

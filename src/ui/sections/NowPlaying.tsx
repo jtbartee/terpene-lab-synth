@@ -2,6 +2,7 @@
 // the material in use (groove, bass motif, melodic motif), layers over time,
 // and the log of development events.
 
+import { endingLabel } from '../../music/composer';
 import { LAYERS } from '../../music/styles';
 import { useStore } from '../../store/store';
 import { Panel } from '../components/bits';
@@ -42,6 +43,7 @@ export function NowPlaying() {
             <dt>Groove</dt><dd>{bar.material.groove}</dd>
             <dt>Bass</dt><dd>{bar.material.bass}</dd>
             <dt>Melody</dt><dd>{bar.material.melody}</dd>
+            {bar.ending !== 'none' && <><dt>Ending</dt><dd>{endingLabel(bar.ending)}</dd></>}
           </dl>
           <div className="timeline" aria-label="Layers over the last 32 bars">
             {LAYERS.map((l) => (

@@ -7,7 +7,7 @@
 // regenerate never stacks a second set of callbacks on the first.
 
 import type * as Tone from 'tone';
-import type { BarPlan, Composer } from '../music/composer';
+import { planSeconds, type BarPlan, type Composer } from '../music/composer';
 import type { SynthEngine } from './engine';
 
 type Transport = ReturnType<typeof Tone.getTransport>;
@@ -69,8 +69,13 @@ export class Sequencer {
     const beats = plan.beats;
     const spb = () => 60 / tr.bpm.value;
     this.onceIds.push(tr.scheduleOnce((t) => {
-      if (tr.bpm.value !== plan.bpm) tr.bpm.setValueAtTime(plan.bpm, t);
-      const barSeconds = beats * (60 / plan.bpm);
+      const barSeconds = planSeconds(plan);
+      if (plan.bpmEnd != null) {
+        // a slowing ending: the tempo ramps across the bar, and the notes (placed in ticks) follow it
+        tr.bpm.setValueAtTime(plan.bpm, t);
+        tr.bpm.linearRampToValueAtTime(plan.bpmEnd, t + barSeconds);
+      } else if (tr.bpm.value !== plan.bpm) tr.bpm.setValueAtTime(plan.bpm, t);
+      this.engine.fadeBar(plan.fade?.[0] ?? 1, plan.fade?.[1] ?? 1, t, barSeconds);
       this.engine.applyLayers(plan.layers, t, barSeconds, this.hooks.smoothing?.() ?? 0.5);
       this.hooks.onBarStart?.(plan, t);
     }, `${startTick}i`));

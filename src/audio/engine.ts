@@ -71,6 +71,8 @@ export class SynthEngine {
   // without bending the waveform.
   private readonly limiter = new Tone.Compressor({ threshold: -1.5, ratio: 20, attack: 0.002, release: 0.15, knee: 1 });
   private readonly volume = new Tone.Gain(1);
+  /** the composition's own fade (a fade-out ending), after the limiter so the fade is not compressed back up */
+  private readonly fader = new Tone.Gain(1);
   readonly waveform: Tone.Analyser | null;
   readonly fft: Tone.Analyser | null;
 
@@ -141,11 +143,12 @@ export class SynthEngine {
 
   constructor(opts: { analyse?: boolean; meters?: boolean } = {}) {
     // master chain
-    this.master.chain(this.highpass, this.globalFilter, this.compressor, this.limiter, this.volume, Tone.getDestination());
+    this.master.chain(this.highpass, this.globalFilter, this.compressor, this.limiter, this.fader, this.volume, Tone.getDestination());
     this.waveform = opts.analyse ? new Tone.Analyser('waveform', 1024) : null;
     this.fft = opts.analyse ? new Tone.Analyser('fft', 512) : null;
-    if (this.waveform) this.limiter.connect(this.waveform);
-    if (this.fft) this.limiter.connect(this.fft);
+    // the scopes show the mix after the composition's own fade (but before the master volume)
+    if (this.waveform) this.fader.connect(this.waveform);
+    if (this.fft) this.fader.connect(this.fft);
 
     // effect returns
     this.reverb.connect(this.reverbReturn);
@@ -392,6 +395,14 @@ export class SynthEngine {
     }
   }
 
+  /** The composition's fade across one bar (1 → 1 outside a fade-out). */
+  fadeBar(from: number, to: number, time: number, seconds: number) {
+    const g = this.fader.gain;
+    g.cancelScheduledValues(time);
+    g.setValueAtTime(from, time);
+    if (to !== from) g.linearRampToValueAtTime(to, time + seconds);
+  }
+
   /** Plays one note event at audio time `t`. */
   trigger(e: NoteEvent, t: number, spb: number) {
     let time = t;
@@ -518,7 +529,7 @@ export class SynthEngine {
   dispose() {
     this.silence(Tone.now(), 0.01);
     const nodes: { dispose(): unknown }[] = [
-      this.master, this.highpass, this.globalFilter, this.compressor, this.limiter, this.volume,
+      this.master, this.highpass, this.globalFilter, this.compressor, this.limiter, this.fader, this.volume,
       this.reverb, this.reverbReturn, this.delayIn, this.delay, this.delayLow, this.delayHigh, this.delayShaper,
       this.delayFeedback, this.delayChorus, this.delayReturn, this.bass, this.arp, this.arpFilter, this.arpLfo,
       this.arpVibrato, this.arpPanner, this.pad, this.padFilter, this.padLfo, this.padChorus, this.padTape,

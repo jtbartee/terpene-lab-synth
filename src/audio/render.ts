@@ -4,7 +4,7 @@
 // bus soloed, so they line up sample-for-sample.
 
 import * as Tone from 'tone';
-import { BUSES, Composer, type Bus, type CompositionSettings } from '../music/composer';
+import { BUSES, Composer, generateBars, planSeconds, type Bus, type CompositionSettings } from '../music/composer';
 import { STYLES } from '../music/styles';
 import { keyPc } from '../music/theory';
 import type { ParamSet } from '../sonify/targets';
@@ -37,7 +37,8 @@ export function compositionSeconds(settings: CompositionSettings, bars: number) 
 
 export async function renderComposition(o: RenderOptions): Promise<RenderResult> {
   const tail = o.tailSeconds ?? 4;
-  const music = compositionSeconds(o.settings, o.bars);
+  // a finite piece may slow down at its end, so its length comes from the plan
+  const music = o.settings.arrangementBars > 0 ? generateBars(o.settings, o.params, o.bars).reduce((t, p) => t + planSeconds(p), 0) : compositionSeconds(o.settings, o.bars);
   const total = music + tail;
   const sampleRate = o.sampleRate ?? 44100;
   const style = STYLES[o.settings.style];

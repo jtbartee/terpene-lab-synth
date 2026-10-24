@@ -28,6 +28,14 @@ export function buildMidi(bars: BarPlan[], s: CompositionSettings): Midi {
   const ppq = midi.header.ppq;
   midi.header.name = `TERPENE SYNTH — ${STYLES[s.style].label}`;
   midi.header.setTempo(s.bpm);
+  // a slowing ending becomes tempo changes, one per beat
+  for (const bar of bars) {
+    if (bar.bpmEnd == null) continue;
+    for (let i = 0; i < bar.beats; i++) {
+      const bpm = bar.bpm + (bar.bpmEnd - bar.bpm) * ((i + 0.5) / bar.beats);
+      midi.header.tempos.push({ ticks: (bar.index * s.beatsPerBar + i) * ppq, bpm: Math.round(bpm * 100) / 100 });
+    }
+  }
   midi.header.timeSignatures.push({ ticks: 0, timeSignature: [s.beatsPerBar, 4], measures: 0 });
   midi.header.keySignatures.push({ ticks: 0, key: s.key, scale: keySignatureScale(s.scale) });
   midi.header.update();
@@ -40,6 +48,8 @@ export function buildMidi(bars: BarPlan[], s: CompositionSettings): Midi {
     if (def.program != null) track.instrument.number = def.program;
     for (const bar of bars) {
       const barTick = bar.index * s.beatsPerBar * ppq;
+      // a fade-out ending becomes channel volume (CC 7), one step per beat
+      if (bar.fade) for (let i = 0; i < bar.beats; i++) track.addCC({ number: 7, ticks: barTick + i * ppq, value: bar.fade[0] + (bar.fade[1] - bar.fade[0]) * (i / bar.beats) });
       for (const e of bar.events) {
         if (!def.voices.includes(e.voice)) continue;
         const ticks = Math.max(0, Math.round(barTick + e.beat * ppq));

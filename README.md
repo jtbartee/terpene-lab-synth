@@ -19,6 +19,8 @@ Live site (after deployment): https://jtbartee.github.io/terpene-lab-synth/
 
 Pieces are now planned before they play: a form (for example *Intro → A → B → A′ → B′ → Outro*, or a krautrock jam that returns to its original groove), a groove from the style's family, a bass motif with its own rhythm, and a melodic hook that develops and comes back. Different seeds in one style now give different rhythms and structures, not just different notes. To hear it, open **Terpene Synth → Listening session** and audition the three Motorik demos (same style, key and profile; different seeds), or run `npm run build && npm run render:demos` to render them to WAV. Details: [docs/COMPOSITION_ENGINE_2.md](docs/COMPOSITION_ENGINE_2.md), numbers: [docs/DIVERSITY_REPORT.md](docs/DIVERSITY_REPORT.md).
 
+**0.2.2: seven endings.** A finite piece (32–256 bars) ends one of seven ways: resolve, final hit, fade-out, slow-down, echo-out, cadence or stop-time. Leave **Synth → Ending** on Auto to let the seed and the form choose, or pick one. See the endings table in [docs/COMPOSITION_ENGINE_2.md](docs/COMPOSITION_ENGINE_2.md#35a-endings-021-seven-kinds-since-022).
+
 Musical mappings are **artistic choices**. Nothing here makes medical, psychological or effect claims.
 
 ## Use it locally

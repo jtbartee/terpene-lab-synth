@@ -1,7 +1,7 @@
 {
   "name": "terpene-lab-synth",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "TERPENE LAB + TERPENE SYNTH: a scientific cannabis-chemistry explorer and a generative electronic music instrument driven by terpene profiles",
   "type": "module",
   "scripts": {

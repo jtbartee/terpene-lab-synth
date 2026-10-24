@@ -125,6 +125,8 @@ export class LivePlayer {
     tr.stop();
     tr.cancel(0);
     this.engine?.silence(Tone.now(), 0.15);
+    // undo a fade-out ending once the voices are silent, so the next sound is not muted
+    this.engine?.fadeBar(1, 1, Tone.now() + 0.2, 0);
   }
 
   /** New seed and/or a fresh start of the same piece. Never duplicates events. */

@@ -7,7 +7,7 @@ import { deriveHypothetical, duplicateProfile, newId, nowIso, relativeCompositio
 import { buildLibraryFile, parseLibraryFile, validateProfile } from '../chem/schema';
 import type { AnalyteId, Profile } from '../chem/types';
 import { DEFAULT_SETTINGS, ENGINE_VERSION, type CompositionSettings } from '../music/composer';
-import { DEMO_SETTINGS, type ListeningDemo } from '../music/demos';
+import { demoSettings, type ListeningDemo } from '../music/demos';
 import { hash, randomSeed } from '../music/rng';
 import { STYLES, type StyleId } from '../music/styles';
 import { BUILT_IN_PRESETS, computeControls, lerpParams, type MappingPreset } from '../sonify/mapping';
@@ -248,7 +248,7 @@ export async function auditionDemo(d: ListeningDemo) {
   stop();
   setSynth({
     profileA: DEMO_A, mutedA: [], followLab: false, morphEnabled: false, mode: 'generative', mapping: BUILT_IN_PRESETS[0], seedLocked: true,
-    settings: { ...DEFAULT_SETTINGS, ...DEMO_SETTINGS, seed: d.seed },
+    settings: { ...DEFAULT_SETTINGS, ...demoSettings(d) },
   });
   await play();
 }

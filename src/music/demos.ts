@@ -4,7 +4,7 @@
 // were chosen by searching seeds for three different plans; the expected plan
 // of each is pinned in tests/music/demos.test.ts so these notes stay true.
 
-import type { CompositionSettings } from './composer';
+import type { CompositionSettings, EndingKind } from './composer';
 
 export interface ListeningDemo {
   id: string;
@@ -16,12 +16,15 @@ export interface ListeningDemo {
   form: string;
   listenFor: string[];
   /** checked by the demo test against the generated plan */
-  expect: { blueprint: string; mainGroove: string; mainBass: string; contrastGroove?: string; contrastBass?: string; ending: 'resolve' | 'button' };
+  expect: { blueprint: string; mainGroove: string; mainBass: string; contrastGroove?: string; contrastBass?: string; ending: EndingKind };
 }
 
 export const DEMO_SETTINGS: Partial<CompositionSettings> = {
   style: 'motorik', key: 'A', scale: 'natural_minor', bpm: 112, beatsPerBar: 4, swing: 0, arrangementBars: 128, autonomous: true,
 };
+
+/** A demo's settings. Its ending is pinned, so the demos keep the endings the owner rated after more endings were added. */
+export const demoSettings = (d: ListeningDemo): Partial<CompositionSettings> => ({ ...DEMO_SETTINGS, seed: d.seed, ending: d.expect.ending });
 
 export const LISTENING_DEMOS: ListeningDemo[] = [
   {
